@@ -4,6 +4,14 @@
 * Author: BootstrapMade.com
 * License: https://bootstrapmade.com/license/
 */
+import "../css/style.css"
+import "../vendor/bootstrap/css/bootstrap.min.css"
+import "../vendor/icofont/icofont.min.css"
+import "../vendor/boxicons/css/boxicons.min.css"
+import "../vendor/remixicon/remixicon.css"
+import "../vendor/owl.carousel/assets/owl.carousel.min.css"
+import "../vendor/aos/aos.css"
+
 !(function($) {
   "use strict";
 
