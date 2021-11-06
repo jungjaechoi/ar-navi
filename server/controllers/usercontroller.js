@@ -1,3 +1,3 @@
 export const home = async (req, res) => {
-    return res.render("test.html");
+    return res.render("index.html");
 }; 

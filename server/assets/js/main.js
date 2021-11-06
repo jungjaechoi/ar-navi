@@ -4,6 +4,7 @@
 * Author: BootstrapMade.com
 * License: https://bootstrapmade.com/license/
 */
+import "../vendor/jquery/jquery.min.js"
 import "../css/style.css"
 import "../vendor/bootstrap/css/bootstrap.min.css"
 import "../vendor/icofont/icofont.min.css"

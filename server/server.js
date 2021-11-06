@@ -2,6 +2,9 @@ import express from "express";
 import morgan from "morgan";
 import rootRouter from "./routers/rootRouter.js";
 import { createRequire } from "module";
+import path from 'path';
+
+
 
 const require = createRequire(import.meta.url);
 
