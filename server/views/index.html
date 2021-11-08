@@ -13,17 +13,14 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-  <!-- Vendor CSS Files
-  <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/assets/vendor/icofont/icofont.min.css" rel="stylesheet">
-  <link href="/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-  <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-  <link href="/assets/vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
-  <link href="/assets/vendor/aos/aos.css" rel="stylesheet"> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
   <!-- Main CSS File -->
   <link rel="stylesheet" type="text/css" href="/assets/js/css/styles.css">..
 
+  <!-- Kakao Login -->
+  <script src = "https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+ 
 </head>
 
 <body>
@@ -41,11 +38,68 @@
           <li><a href="down.html">다운로드</a></li>
           <li><a href="summary.html">서비스개요</a></li>
           <li><a href="manual.html">매뉴얼</a></li>
-
+          <li> <a id="kakao-login-btn"></a></li>
+          <li><button class="api-btn" onclick="unlinkApp()">앱 탈퇴하기</button></li>
+          <li><div id="result"></div></li>
         </ul>
       </nav><!-- .nav-menu -->
     </div>
   </header><!-- End Header -->
+
+  
+  <script type="text/javascript">
+    function unlinkApp() {
+      Kakao.API.request({
+        url: '/v1/user/unlink',
+        success: function(res) {
+          alert('success: ' + JSON.stringify(res))
+          window.location.href = 'http://localhost:4000/'
+        },
+        fail: function(err) {
+          alert('fail: ' + JSON.stringify(err))
+        },
+      })
+    }
+  </script>
+   
+  <script type="text/javascript">
+  Kakao.init('d6b9ec53fda0812052da6ab0de28c815');
+  console.log(Kakao.isInitialized());
+   
+    Kakao.Auth.createLoginButton({
+      container: '#kakao-login-btn',
+      success: function(authObj) {
+        Kakao.API.request({
+          url: '/v2/user/me',
+          success: function(result) {
+            $('#result').append(result);
+            id = result.id
+            connected_at = result.connected_at
+            kakao_account = result.properties
+            $('#result').append(kakao_account);
+            name = "";
+            if(typeof kakao_account != 'undefined'){
+              name = kakao_account.nickname;
+            }
+            resultdiv = name+'<h4> 님 안녕하세요.'  
+            $('#result').append(resultdiv);
+            
+          },
+          fail: function(error) {
+            alert(
+              'login success, but failed to request user information: ' +
+                JSON.stringify(error)
+            )
+          },
+        })
+      },
+      fail: function(err) {
+        alert('failed to login: ' + JSON.stringify(err))
+      },
+    })
+  </script>
+
+
 
   <main id="main">
 
