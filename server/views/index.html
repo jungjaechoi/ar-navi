@@ -20,6 +20,9 @@
 
   <!-- Kakao Login -->
   <script src = "https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <meta name ="google-signin-client_id" content="46237981396-80g7m49b12mt0ef3cdlu7h0upireelj7.apps.googleusercontent.com">
  
 </head>
 
@@ -39,8 +42,10 @@
           <li><a href="summary.html">서비스개요</a></li>
           <li><a href="manual.html">매뉴얼</a></li>
           <li> <a id="kakao-login-btn"></a></li>
+          <li><div id = "google-login-btn" class="g-signin2" data-onsuccess="onSignIn" onclick= "prohibit_prevent()"></div></li>
           <li><div id="result"></div></li>
-          <li><button id ="logout-btn" class="api-btn" style="display: none;" onclick="unlinkApp()">로그아웃</button></li>
+          <li><button id ="logout-btn" class="api-btn" style="display: none;" onclick="logout()">로그아웃</button></li>
+          <!-- <button class="api-btn" onclick="unlinkApp()">앱 탈퇴하기</button> -->
         </ul>
       </nav><!-- .nav-menu -->
     </div>
@@ -48,11 +53,12 @@
 
   
   <script type="text/javascript">
-    function unlinkApp() {
+    function logout() {
       if(localStorage.getItem('name') != null)
       {
         window.location.href = 'http://localhost:4000/'
-        localStorage.clear();
+        localStorage.removeItem('name');
+        localStorage.removeItem('email');
         $('#result').empty();
         name = "";
         $('#logout-btn').style.display = "";
@@ -63,9 +69,56 @@
       }
     }
   </script>
-   
+
   name = "";
-  
+  email = "";
+ 
+  <script type="text/javascript">
+    function prohibit_prevent() {
+      localStorage.setItem("prevent_google_login", 0);
+    }
+  </script>
+
+  <script type="text/javascript">
+    function onSignIn(googleUser) {
+      if(localStorage.getItem("prevent_google_login")!='1'){
+        var profile = googleUser.getBasicProfile();
+        $('#result').empty();
+        $('#result').append(profile);
+        $('#logout-btn').show();
+        $('#kakao-login-btn').hide();
+        $('#google-login-btn').hide();
+        $('#result').append(profile);
+        
+        name = profile.getName();
+        email = profile.getEmail();
+          
+        resultdiv = name+'<h4> 님 안녕하세요.'  
+        $('#result').append(resultdiv);
+        localStorage.setItem('name', name);
+        localStorage.setItem('email', email);
+        
+        localStorage.setItem("prevent_google_login", 1);
+        window.location.href = "/?name=" + name + "&email=" + email;
+      }
+    }
+  </script>
+<!-- 카카오 api 연결 해제 -->
+<!-- 
+  <script type="text/javascript">
+    function unlinkApp() {
+      Kakao.API.request({
+        url: '/v1/user/unlink',
+        success: function(res) {
+          alert('success: ' + JSON.stringify(res))
+        },
+        fail: function(err) {
+          alert('fail: ' + JSON.stringify(err))
+        },
+      })
+    }
+  </script> -->
+
   <script type="text/javascript">
     
     Kakao.init('d6b9ec53fda0812052da6ab0de28c815');
@@ -83,18 +136,21 @@
             id = result.id
             $('#logout-btn').show();
             $('#kakao-login-btn').hide();
+            $('#google-login-btn').hide();
             connected_at = result.connected_at
             kakao_account = result.properties
             $('#result').append(kakao_account);
             
             if(typeof kakao_account != 'undefined'){
               name = kakao_account.nickname;
+              email =result.kakao_account.email;
             }
             
             resultdiv = name+'<h4> 님 안녕하세요.'  
             $('#result').append(resultdiv);
             localStorage.setItem('name', name);
-            window.location.href = "/?user=" + name;
+            localStorage.setItem('email', email);
+            window.location.href = "/?name=" + name + "&email=" + email;
           },
           fail: function(error) {
             alert(
@@ -117,6 +173,7 @@
     if(localStorage.getItem('name')!=null)
     {
       $('#kakao-login-btn').hide();
+      $('#google-login-btn').hide();
       $('#logout-btn').show();
       resultdiv = localStorage.getItem('name')+'<h4> 님 안녕하세요.';  
       $('#result').append(resultdiv);
