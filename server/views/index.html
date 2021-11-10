@@ -39,8 +39,8 @@
           <li><a href="summary.html">서비스개요</a></li>
           <li><a href="manual.html">매뉴얼</a></li>
           <li> <a id="kakao-login-btn"></a></li>
-          <li><button class="api-btn" onclick="unlinkApp()">앱 탈퇴하기</button></li>
           <li><div id="result"></div></li>
+          <li><button id ="logout-btn" class="api-btn" style="display: none;" onclick="unlinkApp()">로그아웃</button></li>
         </ul>
       </nav><!-- .nav-menu -->
     </div>
@@ -49,22 +49,27 @@
   
   <script type="text/javascript">
     function unlinkApp() {
-      Kakao.API.request({
-        url: '/v1/user/unlink',
-        success: function(res) {
-          alert('success: ' + JSON.stringify(res))
-          window.location.href = 'http://localhost:4000/'
-        },
-        fail: function(err) {
-          alert('fail: ' + JSON.stringify(err))
-        },
-      })
+      if(localStorage.getItem('name') != null)
+      {
+        window.location.href = 'http://localhost:4000/'
+        localStorage.clear();
+        $('#result').empty();
+        name = "";
+        $('#logout-btn').style.display = "";
+      }
+      else
+      {
+        alert('로그인하세요');
+      }
     }
   </script>
    
+  name = "";
+  
   <script type="text/javascript">
-  Kakao.init('d6b9ec53fda0812052da6ab0de28c815');
-  console.log(Kakao.isInitialized());
+    
+    Kakao.init('d6b9ec53fda0812052da6ab0de28c815');
+    console.log(Kakao.isInitialized());
    
     Kakao.Auth.createLoginButton({
       container: '#kakao-login-btn',
@@ -73,18 +78,23 @@
         Kakao.API.request({
           url: '/v2/user/me',
           success: function(result) {
+            $('#result').empty();
             $('#result').append(result);
             id = result.id
+            $('#logout-btn').show();
+            $('#kakao-login-btn').hide();
             connected_at = result.connected_at
             kakao_account = result.properties
             $('#result').append(kakao_account);
-            name = "";
+            
             if(typeof kakao_account != 'undefined'){
               name = kakao_account.nickname;
             }
+            
             resultdiv = name+'<h4> 님 안녕하세요.'  
             $('#result').append(resultdiv);
-            
+            localStorage.setItem('name', name);
+            window.location.href = "/?user=" + name;
           },
           fail: function(error) {
             alert(
@@ -93,14 +103,25 @@
             )
           },
         })
+        
       },
       fail: function(err) {
         alert('failed to login: ' + JSON.stringify(err))
       },
     })
+    
   </script>
 
 
+  <script type="text/javascript">
+    if(localStorage.getItem('name')!=null)
+    {
+      $('#kakao-login-btn').hide();
+      $('#logout-btn').show();
+      resultdiv = localStorage.getItem('name')+'<h4> 님 안녕하세요.';  
+      $('#result').append(resultdiv);
+    }
+  </script>
 
   <main id="main">
 
