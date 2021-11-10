@@ -92,7 +92,8 @@
             
             resultdiv = name+'<h4> 님 안녕하세요.'  
             $('#result').append(resultdiv);
-            
+            localStorage.setItem('name', name);
+            window.location.href = "/?user=" + name;
           },
           fail: function(error) {
             alert(
@@ -101,13 +102,15 @@
             )
           },
         })
-        localStorage.setItem('name', name);
+        
       },
       fail: function(err) {
         alert('failed to login: ' + JSON.stringify(err))
       },
     })
+    
   </script>
+
 
   <script type="text/javascript">
     if(localStorage.getItem('name')!=null)
