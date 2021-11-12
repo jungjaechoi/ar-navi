@@ -4,8 +4,7 @@ export const home = async (req, res) => {
     
     const {name, email} = req.query;
     if (email!=null)
-    {
-        console.log('hi');
+    {   
         const useremailExists = await User.exists({email});
         if(useremailExists){
             console.log("이미 가입된 회원입니다.");
@@ -38,3 +37,6 @@ export const manual = async(req,res) => {
     return res.render("manual.html");
 };
 
+export const login = async(req,res) => {
+    return res.render("login.html");
+}

@@ -47,57 +47,27 @@
           <li><a href="down.html">다운로드</a></li>
           <li><a href="summary.html">서비스개요</a></li>
           <li><a href="manual.html">매뉴얼</a></li>
-          <li style ="margin-top: 4px; margin-left: 90px; padding: 6px 10px; border: solid 1px; text-align: center; height: 34px;"><a href= "login.html">로그인</a></li>
-          <!-- <li> <a id="kakao-login-btn" style = "display: none;"></a></li>
-          <a href="#" id = "kakaoLogin" class = "btn sns-kakao"><img src= "/assets/img/btn/kakao.png"></a>
-          <li><div id = "google-login-btn" style = "display: none;" class="g-signin2" data-onsuccess="onSignIn" onclick= "prohibit_prevent()"></div></li>
-          <a href="#" id = "googleLogin" class = "btn sns-google"><img src= "/assets/img/btn/google.png"></a>
-          <li onclick="fnFbCustomLogin();" id = "facebook-login-btn"><a href="javascript:void(0)" style = "display: none;"><span>Login with Facebook</span></a></li>
-          <a href="#" id = "facebookLogin" class = "btn sns-facebook"><img src= "/assets/img/btn/facebook.png"></a>
-          <li><a id="naverIdLogin_loginButton" href="javascript:void(0)" onclick= "prohibit_prevent()" style = "display: none;" ><span>네이버 로그인</span></a></li>
-          <a href="#" id = "naverLogin" class = "btn sns-naver"><img src= "/assets/img/btn/naver.png"></a> -->
-          <li><div id="result"></div></li>
-          <li><button id ="logout-btn" class="api-btn" style="display: none;" onclick="logout()">로그아웃</button></li> 
-          <!-- <button class="api-btn" onclick="unlinkApp()">앱 탈퇴하기</button>
         </ul>
-      </nav>.nav-menu -->
+      </nav>
     </div>
   </header><!-- End Header -->
 
-  
-  <script type="text/javascript">
-    function showPopupLogin() 
-    { 
-      window.open("popupLogin.html", "a", "width=400, height=300, left=100, top=50"); 
-    }
-  </script>
+  <main id="main">
+    <div style = " margin-top: 130px; margin-bottom: 100px; position: absolute; left: 50%; top: 30%; transform: translate(-50%, -50%); border: solid 1px; width: 500px; height: 300px">
+        <li style ="list-style:none;"> <a id="kakao-login-btn" style = "display: none;"></a></li>
+        <a href="#" id = "kakaoLogin" class = "btn sns-kakao"><img src= "/assets/img/btn/kakao.png"></a>
+        <li style ="list-style:none;"><div id = "google-login-btn" style = "display: none;" class="g-signin2" data-onsuccess="onSignIn" onclick= "prohibit_prevent()"></div></li>
+        <a href="#" id = "googleLogin" class = "btn sns-google"><img src= "/assets/img/btn/google.png"></a>
+        <li style ="list-style:none;" onclick="fnFbCustomLogin();" id = "facebook-login-btn"><a href="javascript:void(0)" style = "display: none;"><span>Login with Facebook</span></a></li>
+        <a href="#" id = "facebookLogin" class = "btn sns-facebook"><img src= "/assets/img/btn/facebook.png"></a>
+        <li style ="list-style:none;"><a id="naverIdLogin_loginButton" href="javascript:void(0)" onclick= "prohibit_prevent()" style = "display: none;" ><span>네이버 로그인</span></a></li>
+        <a href="#" id = "naverLogin" class = "btn sns-naver"><img src= "/assets/img/btn/naver.png"></a>
+    </div>
+  </main><!-- End #main -->
 
-<!-- 로그아웃 -->
-  <script type="text/javascript">
-    function logout() {
-      if(localStorage.getItem('name') != null)
-      {
-        window.location.href = 'http://localhost:4000/'
-        localStorage.removeItem('name');
-        localStorage.removeItem('email');
-        $('#result').empty();
-        name = "";
-        $('#logout-btn').style.display = "";
-      }
-      else
-      {
-        alert('로그인하세요');
-      }
-    }
-  </script>
+   <!-- 구글 로그인 -->
 
-  name = "";
-  email = "";
-
-
- <!-- 구글 로그인 -->
-
-  <script type = "text/javascript">
+   <script type = "text/javascript">
     $(document).on("click", "#googleLogin",function(){
       var btnGoogleLogin = document.getElementById("google-login-btn").firstChild;
       btnGoogleLogin.click();
@@ -323,83 +293,7 @@
         }
       });
       
-    
-    
     </script>
-
-  <script type="text/javascript">
-    
-    if(localStorage.getItem('name')!=null)
-    {
-      $('#kakaoLogin').hide();
-      $('#googleLogin').hide();
-      $('#facebookLogin').hide();
-      $('#naverLogin').hide();
-      $('#logout-btn').show();
-      resultdiv = localStorage.getItem('name')+'<h4> 님 안녕하세요.';  
-      $('#result').append(resultdiv);
-    }
-  </script>
-
-  <main id="main">
-
-    <!-- ======= Breadcrumbs ======= -->
-    <div class="breadcrumbs" data-aos="fade-in">
-      <div class="container">
-        <h2>AR 실내 내비게이션 서비스</h2>
-        <p>실내 내비게이션 소개 페이지입니다. </p>
-      </div>
-    </div><!-- End Breadcrumbs -->
-
-    <!-- ======= Events Section ======= -->
-    <section id="events" class="events">
-      <div class="container" data-aos="fade-up">
-
-        <div class="row">
-          <div class="col-md-4 d-flex align-items-stretch">
-            <div class="card">
-              <div class="card-img">
-                <img src="/assets/img/events-1.jpg" alt="...">
-              </div>
-              <div class="card-body">
-                <h5 class="card-title"><a href="down.html">Download App</a></h5>
-                <p class="font-italic text-center">안드로이드 / 아이폰</p>
-                <p class="card-text">안드로이드 / 아이폰의 App을 다운로드 하는 페이지 입니다.</p>
-              </div>
-            </div>
-          </div>
-           <div class="col-md-4 d-flex align-items-stretch">
-            <div class="card">
-              <div class="card-img">
-                <img src="/assets/img/events-2.jpg" alt="...">
-              </div>
-              <div class="card-body">
-                <h5 class="card-title"><a href="summary.html">서비스 개요</a></h5>
-                <p class="font-italic text-center">서비스 개요 및 설명</p>
-                  <p class="card-text">실내 내비게이션이란 무엇인지 개요를 참고하세요.</p>
-                
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 d-flex align-items-stretch">
-            <div class="card">
-              <div class="card-img">
-                <img src="/assets/img/events-3.jpg" alt="...">
-              </div>
-              <div class="card-body">
-                <h5 class="card-title"><a href="manual.html">매뉴얼</a></h5>
-                <p class="font-italic text-center">매뉴얼 소개페이지</p>
-                <p class="card-text">매뉴얼을 보며 누구나 손쉽게 설치 및 사용 할 수 있도록 합니다.</p>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-    </section><!-- End Events Section -->
-
-  </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->
   <footer id="footer">
