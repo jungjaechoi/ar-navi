@@ -6,8 +6,8 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>AR 실내내비게이션서비스</title>
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  
   <!-- Favicons -->
   <link href="/assets/img/favicon.png" rel="icon">
 
@@ -45,7 +45,7 @@
 
       <nav class="nav-menu d-none d-lg-block" style = "position: absolute; margin-top:3px; margin-left: 230px;">
         <ul>
-          <li><a href="index.html">홈</a></li>
+          <li ><a href="index.html">홈</a></li>
           <li><a href="down.html">다운로드</a></li>
           <li><a href="summary.html">서비스개요</a></li>
           <li><a href="manual.html">매뉴얼</a></li>
@@ -58,7 +58,6 @@
       </nav>
     </div>
   </header><!-- End Header -->
-
 
 <!-- 로그아웃 -->
   <script type="text/javascript">
@@ -79,73 +78,6 @@
     }
   </script>
 
-  name = "";
-  email = "";
-
-  <!-- 네이버 로그인 -->
-
-  <script type = "text/javascript">
-    $(document).on("click", "#naverLogin",function(){
-      var btnNaverLogin = document.getElementById("naverIdLogin_loginButton").firstChild;
-      btnNaverLogin.click();
-    });  
-  </script>
-
-  <script>
-        var naverLogin = new naver.LoginWithNaverId(
-            {
-              clientId: "G06lxo0zNnzBKUmigW2z", //내 애플리케이션 정보에 cliendId를 입력해줍니다.
-              callbackUrl: "http://localhost:4000", // 내 애플리케이션 API설정의 Callback URL 을 입력해줍니다.
-              isPopup: false,
-              callbackHandle: true
-            }
-          );	
-        
-        naverLogin.init();
-        
-        window.addEventListener('load', function () {
-          if(localStorage.getItem("prevent_login")!=null)
-        {
-          if(localStorage.getItem("prevent_login")!='1'){
-            naverLogin.getLoginStatus(function (status) {
-              if (status) {
-                console.log('hi');
-                $('#result').empty();
-                $('#result').append(naverLogin.user);
-              
-                $('#login-btn').hide();
-                $('#result').append(naverLogin.user);
-                
-                name = naverLogin.user.getName();
-                email = naverLogin.user.getEmail();
-                  
-                resultdiv = name+' 님 안녕하세요.'  
-              
-                localStorage.setItem('name', name);
-                localStorage.setItem('email', email);
-                
-                localStorage.setItem("prevent_login", 1);
-                window.location.href = "/?name=" + name + "&email=" + email;
-
-                console.log(naverLogin.user); 
-                  
-                      if( email == undefined || email == null) {
-                  alert("이메일은 필수정보입니다. 정보제공을 동의해주세요.");
-                  naverLogin.reprompt();
-                  return;
-                }
-              } else {
-                console.log("callback 처리에 실패하였습니다.");
-              }
-            });
-          }
-        }
-      });
-      
-    
-    
-    </script>
-
   <script type="text/javascript">
     
     if(localStorage.getItem('name')!=null)
@@ -158,65 +90,56 @@
   </script>
 
   <main id="main">
+    <div class="container">
+    <table class="table table-hover" style = "margin-top:100px; margin-bottom:50px;">
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>날짜</th>
+                <th>조회수</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>001</td>
+                <td>제목이다아아아</td>
+                <td>최정재</td>
+                <td>2021.11.15</td>
+                <td>3</td>
+            </tr>
+            <tr>
+                <td>002</td>
+                <td>dafsdasfsad</td>
+                <td>최정재</td>
+                <td>2021.11.15</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>002</td>
+                <td>sdfsdafsadfsdaf</td>
+                <td>최정재</td>
+                <td>2021.11.15</td>
+                <td>7</td>
+            </tr>
+        </tbody>
+        </table>
+        </hr>
 
-    <!-- ======= Breadcrumbs ======= -->
-    <div class="breadcrumbs" data-aos="fade-in">
-      <div class="container">
-        <h2>AR 실내 내비게이션 서비스</h2>
-        <p>실내 내비게이션 소개 페이지입니다. </p>
-      </div>
-    </div><!-- End Breadcrumbs -->
-
-    <!-- ======= Events Section ======= -->
-    <section id="events" class="events">
-      <div class="container" data-aos="fade-up">
-
-        <div class="row">
-          <div class="col-md-4 d-flex align-items-stretch">
-            <div class="card">
-              <div class="card-img">
-                <img src="/assets/img/events-1.jpg" alt="...">
-              </div>
-              <div class="card-body">
-                <h5 class="card-title"><a href="down.html">Download App</a></h5>
-                <p class="font-italic text-center">안드로이드 / 아이폰</p>
-                <p class="card-text">안드로이드 / 아이폰의 App을 다운로드 하는 페이지 입니다.</p>
-              </div>
-            </div>
-          </div>
-           <div class="col-md-4 d-flex align-items-stretch">
-            <div class="card">
-              <div class="card-img">
-                <img src="/assets/img/events-2.jpg" alt="...">
-              </div>
-              <div class="card-body">
-                <h5 class="card-title"><a href="summary.html">서비스 개요</a></h5>
-                <p class="font-italic text-center">서비스 개요 및 설명</p>
-                  <p class="card-text">실내 내비게이션이란 무엇인지 개요를 참고하세요.</p>
-                
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 d-flex align-items-stretch">
-            <div class="card">
-              <div class="card-img">
-                <img src="/assets/img/events-3.jpg" alt="...">
-              </div>
-              <div class="card-body">
-                <h5 class="card-title"><a href="manual.html">매뉴얼</a></h5>
-                <p class="font-italic text-center">매뉴얼 소개페이지</p>
-                <p class="card-text">매뉴얼을 보며 누구나 손쉽게 설치 및 사용 할 수 있도록 합니다.</p>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-    </section><!-- End Events Section -->
-
+        <a style="border: 1px solid;" class = "btn btn-default pull-right" href="write.html" >글쓰기</a>
+        <div class="text-center">
+            <ul class="pagination">
+                <li><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+            </ul>
+        </div>  
+    </div>
   </main><!-- End #main -->
-
+ 
   <!-- ======= Footer ======= -->
   <footer id="footer">
 
