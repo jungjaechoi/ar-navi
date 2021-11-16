@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Board from "../models/Board.js";
 
 export const home = async (req, res) => {
     
@@ -39,4 +40,27 @@ export const manual = async(req,res) => {
 
 export const login = async(req,res) => {
     return res.render("login.html");
+}
+
+export const board = async(req,res) => {
+    return res.render("board.html");
+}
+
+export const getWrite = async(req,res) => {
+    return res.render("write.html");
+}
+
+export const postWrite = async(req,res) => {
+    const {title, contents} = req.body;
+    
+    try{
+        await Board.create({
+            title,
+            contents
+        });
+    }
+    catch(error){
+        console.log('db 저장과정에서 error 발생')
+    }
+    return res.render('board.html');
 }

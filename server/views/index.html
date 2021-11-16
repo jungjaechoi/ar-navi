@@ -6,6 +6,8 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>AR 실내내비게이션서비스</title>
 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
   <!-- Favicons -->
   <link href="/assets/img/favicon.png" rel="icon">
 
@@ -39,38 +41,24 @@
     <div class="container d-flex align-items-center">
 
       <!--<h1 class="logo mr-auto"><a href="index.html">AR </a></h1>-->
-       <a href="index.html" class="logo mr-auto"><img src="/assets/img/ar_logo.png" alt="" class="img-fluid"></a>
+       <a href="index.html" class="logo mr-auto" style = "margin-bottom: 1px;"><img src="/assets/img/ar_logo.png" alt="" class="img-fluid"></a>
 
-      <nav class="nav-menu d-none d-lg-block">
+      <nav class="nav-menu d-none d-lg-block" style = "position: absolute; margin-top:3px; margin-left: 230px;">
         <ul>
-          <li class="active"><a href="index.html">홈</a></li>
+          <li><a href="index.html">홈</a></li>
           <li><a href="down.html">다운로드</a></li>
           <li><a href="summary.html">서비스개요</a></li>
           <li><a href="manual.html">매뉴얼</a></li>
-          <li style ="margin-top: 4px; margin-left: 90px; padding: 6px 10px; border: solid 1px; text-align: center; height: 34px;"><a href= "login.html">로그인</a></li>
-          <!-- <li> <a id="kakao-login-btn" style = "display: none;"></a></li>
-          <a href="#" id = "kakaoLogin" class = "btn sns-kakao"><img src= "/assets/img/btn/kakao.png"></a>
-          <li><div id = "google-login-btn" style = "display: none;" class="g-signin2" data-onsuccess="onSignIn" onclick= "prohibit_prevent()"></div></li>
-          <a href="#" id = "googleLogin" class = "btn sns-google"><img src= "/assets/img/btn/google.png"></a>
-          <li onclick="fnFbCustomLogin();" id = "facebook-login-btn"><a href="javascript:void(0)" style = "display: none;"><span>Login with Facebook</span></a></li>
-          <a href="#" id = "facebookLogin" class = "btn sns-facebook"><img src= "/assets/img/btn/facebook.png"></a>
-          <li><a id="naverIdLogin_loginButton" href="javascript:void(0)" onclick= "prohibit_prevent()" style = "display: none;" ><span>네이버 로그인</span></a></li>
-          <a href="#" id = "naverLogin" class = "btn sns-naver"><img src= "/assets/img/btn/naver.png"></a> -->
-          <li><div id="result"></div></li>
-          <li><button id ="logout-btn" class="api-btn" style="display: none;" onclick="logout()">로그아웃</button></li> 
-          <!-- <button class="api-btn" onclick="unlinkApp()">앱 탈퇴하기</button>
+          <li><a href="board.html">게시판</a></li>
+          <li id = "login-btn" style ="position: absolute; margin-left: 750px; margin-top: 3px; padding: 6px 10px; border: solid 1px; text-align: center; height: 34px;"><a href= "login.html">로그인</a></li>
+          <li><div style = "position: absolute;  margin-left:230px; margin-top:1px; font-size: 12px;" id="result"></div></li>
+          <li id = "logout-btn" style ="position: absolute; margin-top: 3px; margin-left: 750px; display: none;   padding: 6px 10px; border: solid 1px; text-align: center; height: 34px;"  onclick="logout()"><a href="index.html">로그아웃</a></li>
+         
         </ul>
-      </nav>.nav-menu -->
+      </nav>
     </div>
   </header><!-- End Header -->
 
-  
-  <script type="text/javascript">
-    function showPopupLogin() 
-    { 
-      window.open("popupLogin.html", "a", "width=400, height=300, left=100, top=50"); 
-    }
-  </script>
 
 <!-- 로그아웃 -->
   <script type="text/javascript">
@@ -93,172 +81,6 @@
 
   name = "";
   email = "";
-
-
- <!-- 구글 로그인 -->
-
-  <script type = "text/javascript">
-    $(document).on("click", "#googleLogin",function(){
-      var btnGoogleLogin = document.getElementById("google-login-btn").firstChild;
-      btnGoogleLogin.click();
-    });  
-  </script>
-
-  <script type="text/javascript">
-    function prohibit_prevent() {
-      localStorage.setItem("prevent_login", 0);
-    }
-  </script>
-
-  <script type="text/javascript">
-    function onSignIn(googleUser) {
-      if(localStorage.getItem("prevent_login")!=null)
-      {
-        if(localStorage.getItem("prevent_login")!='1'){
-          var profile = googleUser.getBasicProfile();
-          $('#result').empty();
-          $('#result').append(profile);
-         
-          $('#kakaoLogin').hide();
-          $('#googleLogin').hide();
-          $('#facebookLogin').hide();
-          $('#naverLogin').hide();
-          $('#result').append(profile);
-          
-          name = profile.getName();
-          email = profile.getEmail();
-            
-          resultdiv = name+'<h4> 님 안녕하세요.'  
-        
-          localStorage.setItem('name', name);
-          localStorage.setItem('email', email);
-          
-          localStorage.setItem("prevent_login", 1);
-          window.location.href = "/?name=" + name + "&email=" + email;
-        }
-      }
-    }
-  </script>
-
-<!-- 카카오 api 연결 해제 -->
-<!-- 
-  <script type="text/javascript">
-    function unlinkApp() {
-      Kakao.API.request({
-        url: '/v1/user/unlink',
-        success: function(res) {
-          alert('success: ' + JSON.stringify(res))
-        },
-        fail: function(err) {
-          alert('fail: ' + JSON.stringify(err))
-        },
-      })
-    }
-  </script> -->
-
-  <!-- 카카오 로그인 -->
-
-  <script type = "text/javascript">
-    $(document).on("click", "#kakaoLogin",function(){
-      var btnKakaoLogin = document.getElementById("kakao-login-btn").firstChild;
-      btnKakaoLogin.click();
-    });  
-  </script>
-
-  <script type="text/javascript">
-    
-    Kakao.init('d6b9ec53fda0812052da6ab0de28c815');
-    console.log(Kakao.isInitialized());
-   
-    Kakao.Auth.createLoginButton({
-      container: '#kakao-login-btn',
-      
-      success: function(authObj) {
-        Kakao.API.request({
-          url: '/v2/user/me',
-          success: function(result) {
-            $('#result').empty();
-            $('#result').append(result);
-            id = result.id
-            
-            $('#kakaoLogin').hide();
-            $('#googleLogin').hide();
-            $('#facebookLogin').hide();
-            $('#naverLogin').hide();
-            connected_at = result.connected_at
-            kakao_account = result.properties
-            $('#result').append(kakao_account);
-            
-            if(typeof kakao_account != 'undefined'){
-              name = kakao_account.nickname;
-              email =result.kakao_account.email;
-            }
-            
-            resultdiv = name+'<h4> 님 안녕하세요.'  
-           
-            localStorage.setItem('name', name);
-            localStorage.setItem('email', email);
-            window.location.href = "/?name=" + name + "&email=" + email;
-          },
-          fail: function(error) {
-            alert(
-              'login success, but failed to request user information: ' +
-                JSON.stringify(error)
-            )
-          },
-        })
-        
-      },
-      fail: function(err) {
-        alert('failed to login: ' + JSON.stringify(err))
-      },
-    })
-    
-  </script>
-
-  <!-- 페이스북 로그인 -->
-
-  <script type = "text/javascript">
-    $(document).on("click", "#facebookLogin",function(){
-      var btnFacebookLogin = document.getElementById("facebook-login-btn").firstChild;
-      btnFacebookLogin.click();
-    });  
-  </script>
-
-  <script type = "text/javascript">
-
-    //기존 로그인 상태를 가져오기 위해 Facebook에 대한 호출
-    function statusChangeCallback(res){
-      statusChangeCallback(response);
-    }
-    
-    function fnFbCustomLogin(){
-      FB.login(function(response) {
-        if (response.status === 'connected') {
-          FB.api('/me', 'get', {fields: 'name,email'}, function(r) {
-            console.log(r);
-          })
-        } else if (response.status === 'not_authorized') {
-          // 사람은 Facebook에 로그인했지만 앱에는 로그인하지 않았습니다.
-          alert('앱에 로그인해야 이용가능한 기능입니다.');
-        } else {
-          // 그 사람은 Facebook에 로그인하지 않았으므로이 앱에 로그인했는지 여부는 확실하지 않습니다.
-          alert('페이스북에 로그인해야 이용가능한 기능입니다.');
-        }
-      }, {scope: 'public_profile,email'});
-    }
-    
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId      : '1588150011384568', // 내 앱 ID를 입력한다.
-        cookie     : true,
-        xfbml      : true,
-        version    : 'v10.0'
-      });
-      FB.AppEvents.logPageView();   
-    };
-  </script>
-
 
   <!-- 네이버 로그인 -->
 
@@ -291,16 +113,13 @@
                 $('#result').empty();
                 $('#result').append(naverLogin.user);
               
-                $('#kakaoLogin').hide();
-                $('#googleLogin').hide();
-                $('#facebookLogin').hide();
-                $('#naverLogin').hide();
+                $('#login-btn').hide();
                 $('#result').append(naverLogin.user);
                 
                 name = naverLogin.user.getName();
                 email = naverLogin.user.getEmail();
                   
-                resultdiv = name+'<h4> 님 안녕하세요.'  
+                resultdiv = name+' 님 안녕하세요.'  
               
                 localStorage.setItem('name', name);
                 localStorage.setItem('email', email);
@@ -331,12 +150,9 @@
     
     if(localStorage.getItem('name')!=null)
     {
-      $('#kakaoLogin').hide();
-      $('#googleLogin').hide();
-      $('#facebookLogin').hide();
-      $('#naverLogin').hide();
+      $('#login-btn').hide();
       $('#logout-btn').show();
-      resultdiv = localStorage.getItem('name')+'<h4> 님 안녕하세요.';  
+      resultdiv = localStorage.getItem('name')+' 님 안녕하세요.';  
       $('#result').append(resultdiv);
     }
   </script>

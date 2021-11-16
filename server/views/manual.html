@@ -6,6 +6,8 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>AR 실내내비게이션서비스</title>
 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
    <!-- Favicons -->
    <link href="/assets/img/favicon.png" rel="icon">
 
@@ -26,19 +28,53 @@
     <div class="container d-flex align-items-center">
 
       <!--<h1 class="logo mr-auto"><a href="index.html">AR </a></h1>-->
-       <a href="index.html" class="logo mr-auto"><img src="assets/img/ar_logo.png" alt="" class="img-fluid"></a>
+       <a href="index.html" class="logo mr-auto" style = "margin-bottom: 1px;"><img src="/assets/img/ar_logo.png" alt="" class="img-fluid"></a>
 
-      <nav class="nav-menu d-none d-lg-block">
+      <nav class="nav-menu d-none d-lg-block" style = "position: absolute; margin-top:3px; margin-left: 230px;">
         <ul>
           <li><a href="index.html">홈</a></li>
           <li><a href="down.html">다운로드</a></li>
           <li><a href="summary.html">서비스개요</a></li>
-          <li class="active"><a href="manual.html">매뉴얼</a></li>
-
+          <li><a href="manual.html">매뉴얼</a></li>
+          <li><a href="board.html">게시판</a></li>
+          <li id = "login-btn" style ="position: absolute; margin-left: 750px; margin-top: 3px; padding: 6px 10px; border: solid 1px; text-align: center; height: 34px;"><a href= "login.html">로그인</a></li>
+          <li><div style = "position: absolute;  margin-left:230px; margin-top:1px; font-size: 12px;" id="result"></div></li>
+          <li id = "logout-btn" style ="position: absolute; margin-top: 3px; margin-left: 750px; display: none;   padding: 6px 10px; border: solid 1px; text-align: center; height: 34px;"  onclick="logout()"><a href="index.html">로그아웃</a></li>
+         
         </ul>
-      </nav><!-- .nav-menu -->
+      </nav>
     </div>
   </header><!-- End Header -->
+
+<!-- 로그아웃 -->
+<script type="text/javascript">
+  function logout() {
+    if(localStorage.getItem('name') != null)
+    {
+      window.location.href = 'http://localhost:4000/'
+      localStorage.removeItem('name');
+      localStorage.removeItem('email');
+      $('#result').empty();
+      name = "";
+      $('#logout-btn').style.display = "";
+    }
+    else
+    {
+      alert('로그인하세요');
+    }
+  }
+</script>
+
+  <script type="text/javascript">
+    
+    if(localStorage.getItem('name')!=null)
+    {
+      $('#login-btn').hide();
+      $('#logout-btn').show();
+      resultdiv = localStorage.getItem('name')+' 님 안녕하세요.';  
+      $('#result').append(resultdiv);
+    }
+  </script>
 
   <main id="main">
 
