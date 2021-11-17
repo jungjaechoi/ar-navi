@@ -98,32 +98,9 @@
                 <th>제목</th>
                 <th>작성자</th>
                 <th>날짜</th>
-                <th>조회수</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td>001</td>
-                <td>제목이다아아아</td>
-                <td>최정재</td>
-                <td>2021.11.15</td>
-                <td>3</td>
-            </tr>
-            <tr>
-                <td>002</td>
-                <td>dafsdasfsad</td>
-                <td>최정재</td>
-                <td>2021.11.15</td>
-                <td>1</td>
-            </tr>
-            <tr>
-                <td>002</td>
-                <td>sdfsdafsadfsdaf</td>
-                <td>최정재</td>
-                <td>2021.11.15</td>
-                <td>7</td>
-            </tr>
-        </tbody>
+        <tbody id="tblShow"></tbody>
         </table>
         </hr>
 
@@ -139,7 +116,30 @@
         </div>  
     </div>
   </main><!-- End #main -->
- 
+
+  <script type="text/javascript">
+    
+    for(var element in boards){
+      var objRow;
+      objRow = document.all("tblShow").insertRow();
+
+      var objCell_num = objRow.insertCell();
+      objCell_num.innerHTML = '1';
+
+      var objCell_title = objRow.insertCell();
+      objCell_title.innerHTML = element;
+
+      var objCell_name = objRow.insertCell();
+      objCell_name.innerHTML = 'ddd';
+
+      var objCell_date = objRow.insertCell();
+      objCell_date.innerHTML = 'aaa';
+    }
+    
+
+    
+  </script>
+
   <!-- ======= Footer ======= -->
   <footer id="footer">
 

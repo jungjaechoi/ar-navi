@@ -43,7 +43,8 @@ export const login = async(req,res) => {
 }
 
 export const board = async(req,res) => {
-    return res.render("board.html");
+    const boards = await Board.find({});
+    return res.render("board.html", {boards});
 }
 
 export const getWrite = async(req,res) => {
