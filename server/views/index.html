@@ -125,7 +125,14 @@
                 localStorage.setItem('email', email);
                 
                 localStorage.setItem("prevent_login", 1);
-                window.location.href = "/?name=" + name + "&email=" + email;
+                $.ajax({
+                  url:"/login.html",
+                  type: "post",
+                  data: {name: name, email: email},
+                  success: function(){
+                    window.location.href = "index.html";
+                  }
+                })
 
                 console.log(naverLogin.user); 
                   

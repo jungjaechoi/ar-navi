@@ -2,27 +2,6 @@ import User from "../models/User.js";
 import Board from "../models/Board.js";
 
 export const home = async (req, res) => {
-    
-    const {name, email} = req.query;
-    if (email!=null)
-    {   
-        const useremailExists = await User.exists({email});
-        if(useremailExists){
-            console.log("이미 가입된 회원입니다.");
-        }
-        else{
-            try{
-                console.log('gg');
-                await User.create({
-                    name,
-                    email
-                });
-            }
-            catch(error){
-                console.log("db 저장과정에서 error 발생")
-            }
-        }
-    }
     return res.render("index.html");
 }; 
  
@@ -38,8 +17,29 @@ export const manual = async(req,res) => {
     return res.render("manual.html");
 };
 
-export const login = async(req,res) => {
+export const getLogin = async(req,res) => {
     return res.render("login.html");
+}
+
+export const postLogin = async(req,res) => {
+    const {name, email} = req.body;
+    const useremailExists = await User.exists({email});
+    if(useremailExists){
+        console.log("이미 가입된 회원입니다.");
+    }
+    else{
+        try{
+            console.log('db에 회원정보가 저장되었습니다');
+            await User.create({
+                name,
+                email
+            });
+        }
+        catch(error){
+            console.log("db 저장과정에서 error 발생")
+        }
+    }
+    return res.redirect('index.html');
 }
 
 export const board = async(req,res) => {
@@ -62,7 +62,7 @@ export const postWrite = async(req,res) => {
     var year = dates.getFullYear();
     var month = dates.getMonth();
     var day = dates.getDate();
-    var date = `{year: ${year}, month: ${month}, day: ${day}}`;
+    var date = {"year": year, "month": month, "day": day};
     try{
         await Board.create({
             title,
