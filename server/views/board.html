@@ -6,6 +6,8 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>AR 실내내비게이션서비스</title>
 
+ 
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
   
   <!-- Favicons -->
@@ -91,7 +93,7 @@
 
   <main id="main">
     <div class="container">
-    <table class="table table-hover" style = "margin-top:100px; margin-bottom:50px;">
+    <table class="table table-hover" style = "height: 340px; margin-top:100px; margin-bottom:40px;">
         <thead>
             <tr>
                 <th>번호</th>
@@ -100,44 +102,107 @@
                 <th>날짜</th>
             </tr>
         </thead>
-        <tbody id="tblShow"></tbody>
+        <tbody style = "height: 34px;" id="tblShow">
+        </tbody>
         </table>
         </hr>
 
         <a style="border: 1px solid;" class = "btn btn-default pull-right" href="write.html" >글쓰기</a>
-        <div class="text-center">
+        <div style="margin-left: 45%; margin-bottom: 60px;">
             <ul class="pagination">
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
+                <li><a onclick="first();">1</a></li>
+                <li><a onclick="second();">2</a></li>
+                <li><a onclick="third();">3</a></li>
+                <li><a onclick="fourth();">4</a></li>
+                <li><a onclick="fifth();">5</a></li>
             </ul>
         </div>  
     </div>
   </main><!-- End #main -->
 
   <script type="text/javascript">
-    
-    for(var element in boards){
-      var objRow;
-      objRow = document.all("tblShow").insertRow();
+    $(document).ready(function(){
+      $.ajax({
+        url: "/loadboards",
+        type: "get",
+        datatype: "json",
+        success: function(result){
+          
+          var param = JSON.stringify(result);
+          var length = Object.keys(result.boards).length;
+          for(var i = 0; i<10 && i<length; i++){
+          var objRow;
+          objRow = document.all("tblShow").insertRow();
 
-      var objCell_num = objRow.insertCell();
-      objCell_num.innerHTML = '1';
+          var objCell_num = objRow.insertCell();
+          objCell_num.innerHTML = i+1;
 
-      var objCell_title = objRow.insertCell();
-      objCell_title.innerHTML = element;
+          var objCell_title = objRow.insertCell();
+          objCell_title.innerHTML =  result.boards[i].title
 
-      var objCell_name = objRow.insertCell();
-      objCell_name.innerHTML = 'ddd';
+          var objCell_name = objRow.insertCell();
+          objCell_name.innerHTML = 'ddd';
 
-      var objCell_date = objRow.insertCell();
-      objCell_date.innerHTML = 'aaa';
+          var objCell_date = objRow.insertCell();
+          objCell_date.innerHTML = 'aaa';
+        }
+
+        }
+      })
+    })
+   
+    function load(num){
+      $(document).ready(function(){
+      $.ajax({
+        url: "/loadboards",
+        type: "get",
+        datatype: "json",
+        success: function(result){
+          
+          for(var i = 0; i<10 ; i++){
+            document.all("tblShow").deleteRow(-1);
+          }
+
+          var param = JSON.stringify(result);
+          var length = Object.keys(result.boards).length;
+          for(var i = 10*num; i<10*num+10  && i<length; i++){
+          var objRow;
+          objRow = document.all("tblShow").insertRow();
+
+          var objCell_num = objRow.insertCell();
+          objCell_num.innerHTML = i+1;
+
+          var objCell_title = objRow.insertCell();
+          objCell_title.innerHTML =  result.boards[i].title
+
+          var objCell_name = objRow.insertCell();
+          objCell_name.innerHTML = 'ddd';
+
+          var objCell_date = objRow.insertCell();
+          objCell_date.innerHTML = 'aaa';
+        }
+
+        }
+      })
+    })
     }
-    
 
-    
+    function first(){
+      load(0);
+    }
+    function second(){
+      load(1);
+    } 
+    function third(){
+      load(2);
+    }
+    function fourth(){
+      load(3);
+    }
+    function fifth(){
+      load(4);
+    }
+
   </script>
 
   <!-- ======= Footer ======= -->

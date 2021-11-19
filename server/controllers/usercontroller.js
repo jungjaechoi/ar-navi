@@ -47,21 +47,32 @@ export const board = async(req,res) => {
     return res.render("board.html", {boards});
 }
 
+export const loadboards = async(req,res) => {
+    const boards = await Board.find({});
+    return res.json({boards});
+}
+
 export const getWrite = async(req,res) => {
     return res.render("write.html");
 }
 
 export const postWrite = async(req,res) => {
     const {title, contents} = req.body;
-    
+    var dates = new Date();
+    var year = dates.getFullYear();
+    var month = dates.getMonth();
+    var day = dates.getDate();
+    var date = `{year: ${year}, month: ${month}, day: ${day}}`;
     try{
         await Board.create({
             title,
-            contents
+            contents,
+            date
         });
     }
     catch(error){
         console.log('db 저장과정에서 error 발생')
     }
-    return res.render('board.html');
+
+    return res.redirect('board.html');
 }
