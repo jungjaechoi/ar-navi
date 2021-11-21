@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import Board from "../models/Board.js";
+import Comment from "../models/User.js";
 
 export const home = async (req, res) => {
     return res.render("index.html");
@@ -75,4 +76,23 @@ export const postWrite = async(req,res) => {
     }
 
     return res.redirect('board.html');
+}
+
+export const getContents = async(req,res) => {
+    return res.render("contents.html");
+}
+
+export const postContents = async(req,res) =>{
+    const {index, contents} = req.body;
+    try{
+        await Board.create({
+            index,
+            contents
+        });
+    }
+    catch(error){
+        console.log('db 저장과정에서 error 발생')
+    }
+
+    return res.redirect("/contents.html/?index=" + index);
 }

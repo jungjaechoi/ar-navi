@@ -41,18 +41,18 @@
     <div class="container d-flex align-items-center">
 
       <!--<h1 class="logo mr-auto"><a href="index.html">AR </a></h1>-->
-       <a href="index.html" class="logo mr-auto" style = "margin-bottom: 1px;"><img src="/assets/img/ar_logo.png" alt="" class="img-fluid"></a>
+       <a href="/index.html" class="logo mr-auto" style = "margin-bottom: 1px;"><img src="/assets/img/ar_logo.png" alt="" class="img-fluid"></a>
 
       <nav class="nav-menu d-none d-lg-block" style = "position: absolute; margin-top:3px; margin-left: 230px;">
         <ul>
-          <li ><a href="index.html">홈</a></li>
-          <li><a href="down.html">다운로드</a></li>
-          <li><a href="summary.html">서비스개요</a></li>
-          <li><a href="manual.html">매뉴얼</a></li>
-          <li><a href="board.html">게시판</a></li>
-          <li id = "login-btn" style ="position: absolute; margin-left: 750px; margin-top: 3px; padding: 6px 10px; border: solid 1px; text-align: center; height: 34px;"><a href= "login.html">로그인</a></li>
+          <li ><a href="/index.html">홈</a></li>
+          <li><a href="/down.html">다운로드</a></li>
+          <li><a href="/summary.html">서비스개요</a></li>
+          <li><a href="/manual.html">매뉴얼</a></li>
+          <li><a href="/board.html">게시판</a></li>
+          <li id = "login-btn" style ="position: absolute; margin-left: 750px; margin-top: 3px; padding: 6px 10px; border: solid 1px; text-align: center; height: 34px;"><a href= "/login.html">로그인</a></li>
           <li><div style = "position: absolute;  margin-left:230px; margin-top:1px; font-size: 12px;" id="result"></div></li>
-          <li id = "logout-btn" style ="position: absolute; margin-top: 3px; margin-left: 750px; display: none;   padding: 6px 10px; border: solid 1px; text-align: center; height: 34px;"  onclick="logout()"><a href="index.html">로그아웃</a></li>
+          <li id = "logout-btn" style ="position: absolute; margin-top: 3px; margin-left: 750px; display: none;   padding: 6px 10px; border: solid 1px; text-align: center; height: 34px;"  onclick="logout()"><a href="/index.html">로그아웃</a></li>
          
         </ul>
       </nav>
@@ -90,23 +90,45 @@
   </script>
 
   <main id="main">
-    <h2 style="margin-top: 115px; text-align: center;">게시글 작성</h2> 
-    <form style="margin-top: 20px;" method="post">
-        <ul style="list-style-type:none; ">
-            <li style="text-align: center; margin-bottom: 10px;">
-                <input name="title" type="text" style="width:500px; font-size: 1.4rem; padding: 6px;" placeholder="제목을 입력하세요" required>
-            </li>
-            <li style="text-align: center;">
-                <textarea id="story" rows="15" cols="100" name = "contents" 
-                style="width:500px; font-size: 1.4rem; letter-spacing: 1px; padding: 6px;  line-height: 1.5; border-radius: 5px; border: 1px solid;" placeholder="내용을 입력하세요" required></textarea>
-            </li>
-            <li style="text-align: center;">
-                <input type="submit",  value="제출" style="margin-top: 25px; margin-bottom: 50px; font-size: 13px;">
-            </li>
-        </ul>
-    </form> 
+    <h2 style="margin-top: 115px; margin-bottom: 20px; text-align: center;">게시글</h2> 
+      <ul style="list-style-type:none; ">
+          <li style="text-align: center; margin-bottom: 10px;">
+              <input name="title" id = "title" type="text" style="width:500px; font-size: 1.4rem; padding: 6px;" value="" readonly/>
+          </li>
+          <li style="text-align: center;">
+              <input name="contents" id = "contents" type="text" style="width:500px; height: 300px; font-size: 1.4rem; padding: 6px; margin-bottom: 100px;" value="" readonly/>
+          </li>
+      </ul>
     </main><!-- End #main -->
- 
+
+    <script  type="text/javascript">
+
+      function get_query()
+      { var url = document.location.href; 
+        var qs = url.substring(url.indexOf('?') + 1).split('&'); 
+        for(var i = 0, result = {}; i < qs.length; i++){ 
+          qs[i] = qs[i].split('='); 
+          result[qs[i][0]] = decodeURIComponent(qs[i][1]); 
+        } 
+        return result; 
+      }
+
+      $(document).ready(function(){
+        $.ajax({
+          url: "/loadboards",
+          type: "get",
+          datatype: "json",
+          success: function(result){
+            
+            var obj = get_query();
+            console.log(obj.index);
+            $('input[name=title]').attr('value',result.boards[obj.index-1].title);
+            $('input[name=contents]').attr('value',result.boards[obj.index-1].contents); 
+
+          }
+        })
+      })
+    </script>
   <!-- ======= Footer ======= -->
   <footer id="footer">
 
@@ -115,7 +137,7 @@
         <div class="row">
 
           <div class="col-lg-4 col-md-6 footer-contact">
-            <h3><a href="index.html" class="logo mr-auto"><img src="/assets/img/foot_logo.png" alt="" class="img-fluid"></a></h3>
+            <h3><a href="/index.html" class="logo mr-auto"><img src="/assets/img/foot_logo.png" alt="" class="img-fluid"></a></h3>
             <p>
               서울특별시 성북구 안암로 145 고려대학교 산학관<br><br>
               <strong>Phone:</strong> 02 3291 2200<br>
@@ -127,10 +149,10 @@
           <div class="col-lg-6 col-md-6 footer-links">
             <!--<h4>Useful Links</h4>-->
             <ul>
-              <li><i class="bx bx-chevron-right"></i> <a href="index.html">홈</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="down.html">다운로드</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="summary.html">서비스 개요</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="manual.html">매뉴얼</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/index.html">홈</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/down.html">다운로드</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/summary.html">서비스 개요</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="/manual.html">매뉴얼</a></li>
             </ul>
           </div>
 
