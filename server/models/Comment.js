@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 
 const commentSchema = new mongoose.Schema({
-    index: {type: Int, required: true, unique: true},
-    contents: {type: String, required: true}
+    index: {type: Number, required: true},
+    comment: {type: String, required: true},
+    date: {type: JSON, required: true}
 })
 
 const Comment = mongoose.model('Comment', commentSchema);
-export default customElements; 
+export default Comment; 

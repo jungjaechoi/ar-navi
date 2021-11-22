@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import Board from "../models/Board.js";
-import Comment from "../models/User.js";
+import Comment from "../models/Comment.js";
 
 export const home = async (req, res) => {
     return res.render("index.html");
@@ -83,16 +83,31 @@ export const getContents = async(req,res) => {
 }
 
 export const postContents = async(req,res) =>{
-    const {index, contents} = req.body;
+    const {index, comment} = req.body;
+    var dates = new Date();
+    var year = dates.getFullYear();
+    var month = dates.getMonth();
+    var day = dates.getDate();
+    var date = {"year": year, "month": month, "day": day};
     try{
-        await Board.create({
+        await Comment.create({
             index,
-            contents
+            comment,
+            date 
         });
+        console.log(index, comment,date);
     }
     catch(error){
         console.log('db 저장과정에서 error 발생')
+        console.log(index, comment,date);
     }
+ 
+    return res.redirect("/contents.html/?index=" + String(Number(index) + 1));
+}
 
-    return res.redirect("/contents.html/?index=" + index);
+export const loadcomments = async(req,res) => {
+    const {index} = req.body;
+    const num = String(Number(index.index)-1)
+    const comments = await Comment.find({'index':num});
+    return res.json({comments});
 }

@@ -92,35 +92,38 @@
   </script>
 
   <main id="main">
-    <div class="container">
-    <table class="table table-hover" style = "height: 340px; margin-top:100px; margin-bottom:40px;">
-        <thead>
-            <tr>
-                <th>번호</th>
-                <th>제목</th>
-                <th>작성자</th>
-                <th>날짜</th>
-            </tr>
-        </thead>
-        <tbody id="tblShow">
-        </tbody>
-        </table>
+    <div class="container" >
+      <div style="height: 340px;">
+        <table class="table table-hover" style = " margin-top:100px; margin-bottom:40px;">
+          <thead>
+              <tr>
+                  <th>번호</th>
+                  <th>제목</th>
+                  <th>작성자</th>
+                  <th>날짜</th>
+              </tr>
+          </thead>
+          <tbody style = "height: 34px;" id="tblShow">
+          </tbody>
+          </table>
+      </div>
         </hr>
 
-        <a style="border: 1px solid;" class = "btn btn-default pull-right" href="write.html" >글쓰기</a>
-        <div style="margin-left: 45%; margin-bottom: 60px;">
-            <ul class="pagination">
-                <li><a onclick="first();">1</a></li>
-                <li><a onclick="second();">2</a></li>
-                <li><a onclick="third();">3</a></li>
-                <li><a onclick="fourth();">4</a></li>
-                <li><a onclick="fifth();">5</a></li>
-            </ul>
-        </div>  
+      <a style="border: 1px solid; margin-top: 20px;" class = "btn btn-default pull-right" href="write.html" >글쓰기</a>
+      <div style="margin-left: 45%; margin-top: 60px; margin-bottom: 60px;">
+          <ul class="pagination">
+              <li><a onclick="first();">1</a></li>
+              <li><a onclick="second();">2</a></li>
+              <li><a onclick="third();">3</a></li>
+              <li><a onclick="fourth();">4</a></li>
+              <li><a onclick="fifth();">5</a></li>
+          </ul>
+      </div>  
     </div>
   </main><!-- End #main -->
 
   <script type="text/javascript">
+
     $(document).ready(function(){
       $.ajax({
         url: "/loadboards",
@@ -138,13 +141,17 @@
           objCell_num.innerHTML = i+1;
 
           var objCell_title = objRow.insertCell();
-          objCell_title.innerHTML =  result.boards[i].title
+          objCell_title.innerHTML =  result.boards[i].title;
 
           var objCell_name = objRow.insertCell();
           objCell_name.innerHTML = 'ddd';
 
           var objCell_date = objRow.insertCell();
-          objCell_date.innerHTML = 'aaa';
+          objCell_date.innerHTML = result.boards[i].date.year + '-' + result.boards[i].date.month + '-' + result.boards[i].date.day;
+
+          objRow.onclick = function(element){
+            window.location.href = "/contents.html/?index=" + element.srcElement.parentNode.rowIndex;
+          }
         }
 
         }
@@ -179,7 +186,11 @@
           objCell_name.innerHTML = 'ddd';
 
           var objCell_date = objRow.insertCell();
-          objCell_date.innerHTML = 'aaa';
+          objCell_date.innerHTML = result.boards[i].date.year + '-' + result.boards[i].date.month + '-' + result.boards[i].date.day;
+           
+          objRow.onclick = function(element){
+            window.location.href = "/contents.html/?index=" + (num*10+element.srcElement.parentNode.rowIndex);
+          }
         }
 
         }

@@ -1,5 +1,5 @@
 import express from "express";
-import {home, down, summary, manual, getLogin, postLogin, board, getWrite, postWrite, loadboards,getContents,postContents} from "../controllers/usercontroller.js";
+import {home, down, summary, manual, getLogin, postLogin, board, getWrite, postWrite, loadboards,getContents,postContents, loadcomments} from "../controllers/usercontroller.js";
 
 const rootRouter = express.Router();
 
@@ -13,5 +13,6 @@ rootRouter.get("/board.html", board);
 rootRouter.route("/write.html").get(getWrite).post(postWrite);
 rootRouter.get("/loadboards",loadboards);
 rootRouter.route("/contents.html").get(getContents).post(postContents);
+rootRouter.post("/loadcomments",loadcomments);
 
 export default rootRouter;   

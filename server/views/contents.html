@@ -91,55 +91,98 @@
 
   <main id="main">
     <h2 style="margin-top: 115px; margin-bottom: 20px; text-align: center;">게시글</h2> 
+    <ul style="list-style-type:none; ">
+        <li style="text-align: center; margin-bottom: 10px;">
+            <input name="title" id = "title" type="text" style="width:500px; font-size: 1.4rem; padding: 6px;" value="" readonly/>
+        </li>
+        <li style="text-align: center;">
+            <input name="contents" id = "contents" type="text" style="width:500px; height: 300px; font-size: 1.4rem; padding: 6px;" value="" readonly/>
+        </li>
+    </ul>
+    <a style="border: 1px solid; margin-top: 20px;" class = "btn btn-default pull-right" href="write.html" >글쓰기</a>
+    
+
+    <form style="margin-top: 50px;" method="post">
       <ul style="list-style-type:none; ">
-          <li style="text-align: center; margin-bottom: 10px;">
-              <input name="title" id = "title" type="text" style="width:500px; font-size: 1.4rem; padding: 6px;" value="" readonly/>
+          <li style="text-align: center;">
+              <textarea id="comment" rows="3" cols="100" name = "comment" 
+              style="width:500px; font-size: 1.4rem; letter-spacing: 1px; padding: 6px;  line-height: 1.5; border: 1px solid;" placeholder="댓글을 입력하세요"></textarea>
+          </li>
+          <li>
+            <input type="text" style="display: none;" id="index" name="index">
           </li>
           <li style="text-align: center;">
-              <input name="contents" id = "contents" type="text" style="width:500px; height: 300px; font-size: 1.4rem; padding: 6px;" value="" readonly/>
+              <input type="submit",  value="댓글 달기" style="margin-top: 15px; margin-bottom: 30px; font-size: 13px;">
           </li>
       </ul>
+    </form>
 
-      <form style="margin-top: 50px;" method="post">
-        <ul style="list-style-type:none; ">
-            <li style="text-align: center;">
-                <textarea id="comment" rows="3" cols="100" name = "comment" 
-                style="width:500px; font-size: 1.4rem; letter-spacing: 1px; padding: 6px;  line-height: 1.5; border: 1px solid;" placeholder="댓글을 입력하세요" required></textarea>
-            </li>
-            <li style="text-align: center;">
-                <input type="submit",  value="댓글 달기" style="margin-top: 15px; margin-bottom: 50px; font-size: 13px;">
-            </li>
-        </ul>
-    </main><!-- End #main -->
 
-    <script  type="text/javascript">
+    
+    <hr>
+    <table class="table" style = "width: 460px; margin: auto;">
+      <tbody id ="commentsShow"></tbody>
+    </table>
+  
 
-      function get_query()
-      { var url = document.location.href; 
-        var qs = url.substring(url.indexOf('?') + 1).split('&'); 
-        for(var i = 0, result = {}; i < qs.length; i++){ 
-          qs[i] = qs[i].split('='); 
-          result[qs[i][0]] = decodeURIComponent(qs[i][1]); 
-        } 
-        return result; 
+    
+  </main><!-- End #main -->
+
+  <script  type="text/javascript">
+
+    function get_query()
+    { var url = document.location.href; 
+      var qs = url.substring(url.indexOf('?') + 1).split('&'); 
+      for(var i = 0, result = {}; i < qs.length; i++){ 
+        qs[i] = qs[i].split('='); 
+        result[qs[i][0]] = decodeURIComponent(qs[i][1]); 
+      } 
+      return result; 
+    }
+
+    $(document).ready(function(){
+      $.ajax({
+        url: "/loadboards",
+        type: "get",
+        datatype: "json",
+        success: function(result){
+          
+          var obj = get_query();
+          $('input[name=title]').attr('value',result.boards[obj.index-1].title);
+          $('input[name=contents]').attr('value',result.boards[obj.index-1].contents); 
+          $('input[name=index]').attr('value',obj.index-1);
+        }
+      })
+    })
+
+    $(document).ready(function(){
+    $.ajax({
+      url: "/loadcomments",
+      type: "post",
+      data: {index: get_query()},
+      datatype: "json",
+      success: function(result){
+        
+        var length = Object.keys(result.comments).length;
+        for(var i = 0; i<length; i++){
+          var objRow;
+          objRow = document.all("commentsShow").insertRow();
+          objDate = document.all("commentsShow").insertRow();
+          var objCell = objRow.insertCell();
+          var objCell2 = objDate.insertCell();
+          var frmTag = result.comments[i].comment;
+          var frmTag2 = result.comments[i].date.year + '-' + result.comments[i].date.month + '-' + result.comments[i].date.day
+          objCell.innerHTML = frmTag;
+          objCell2.innerHTML = frmTag2;
+          objCell.style = "font-size: 1.4em; border-bottom:none; padding-top:6px; padding-bottom: 1px;"
+          objCell2.style = "font-size: 1em; color:gray; border-top:none; padding-top:2px;"
       }
 
-      $(document).ready(function(){
-        $.ajax({
-          url: "/loadboards",
-          type: "get",
-          datatype: "json",
-          success: function(result){
-            
-            var obj = get_query();
-            console.log(obj.index);
-            $('input[name=title]').attr('value',result.boards[obj.index-1].title);
-            $('input[name=contents]').attr('value',result.boards[obj.index-1].contents); 
-
-          }
-        })
-      })
-    </script>
+      }
+    })
+  })
+  </script>
+  
   <!-- ======= Footer ======= -->
   <footer id="footer">
 
