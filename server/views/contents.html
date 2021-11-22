@@ -96,9 +96,20 @@
               <input name="title" id = "title" type="text" style="width:500px; font-size: 1.4rem; padding: 6px;" value="" readonly/>
           </li>
           <li style="text-align: center;">
-              <input name="contents" id = "contents" type="text" style="width:500px; height: 300px; font-size: 1.4rem; padding: 6px; margin-bottom: 100px;" value="" readonly/>
+              <input name="contents" id = "contents" type="text" style="width:500px; height: 300px; font-size: 1.4rem; padding: 6px;" value="" readonly/>
           </li>
       </ul>
+
+      <form style="margin-top: 50px;" method="post">
+        <ul style="list-style-type:none; ">
+            <li style="text-align: center;">
+                <textarea id="comment" rows="3" cols="100" name = "comment" 
+                style="width:500px; font-size: 1.4rem; letter-spacing: 1px; padding: 6px;  line-height: 1.5; border: 1px solid;" placeholder="댓글을 입력하세요" required></textarea>
+            </li>
+            <li style="text-align: center;">
+                <input type="submit",  value="댓글 달기" style="margin-top: 15px; margin-bottom: 50px; font-size: 13px;">
+            </li>
+        </ul>
     </main><!-- End #main -->
 
     <script  type="text/javascript">
