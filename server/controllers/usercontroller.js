@@ -102,11 +102,9 @@ export const postContents = async(req,res) =>{
             comment,
             date 
         });
-        console.log(index, comment,date);
     }
     catch(error){
         console.log('db 저장과정에서 error 발생')
-        console.log(index, comment,date);
     }
  
     return res.redirect("/contents.html/?index=" + String(Number(index) + 1));

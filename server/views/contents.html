@@ -104,8 +104,8 @@
         </li>
     </ul>
     
-
-    <form style="margin-top: 50px;" method="post">
+    <hr style="margin-top: 50px;" >
+    <form style="margin-top: 20px;" method="post">
       <ul style="list-style-type:none; ">
           <li style="text-align: center;">
               <textarea id="comment" rows="3" cols="100" name = "comment" 
@@ -122,8 +122,8 @@
 
 
     
-    <hr>
-    <table class="table" style = "width: 460px; margin: auto;">
+   
+    <table class="table" style = "width: 460px; margin: auto; margin-bottom:100px;">
       <tbody id ="commentsShow"></tbody>
     </table>
   
@@ -180,8 +180,9 @@
           var frmTag2 = result.comments[i].date.year + '-' + result.comments[i].date.month + '-' + result.comments[i].date.day
           objCell.innerHTML = frmTag;
           objCell2.innerHTML = frmTag2;
-          objCell.style = "font-size: 1.4em; border-bottom:none; padding-top:6px; padding-bottom: 1px;"
-          objCell2.style = "font-size: 1em; color:gray; border-top:none; padding-top:2px;"
+          objCell.style = "font-size: 1.4em; border-bottom:none; padding-top:15px; padding-bottom: 3px; width:460px;"
+          objCell2.style = "font-size: 1em; color:gray; border-top:none; padding-top:6px; padding-bottom: 3px;"
+          objRow.style = "word-break: break-all;"
       }
 
       }
