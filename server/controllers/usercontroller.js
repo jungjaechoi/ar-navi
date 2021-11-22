@@ -48,8 +48,15 @@ export const board = async(req,res) => {
     return res.render("board.html", {boards});
 }
 
-export const loadboards = async(req,res) => {
+export const getLoadboards = async(req,res) => {
     const boards = await Board.find({});
+    return res.json({boards});
+}
+
+export const postLoadboards = async(req,res) => {
+    const {index} = req.body;
+    const num = index.index;
+    const boards = await Board.find({'index':num});
     return res.json({boards});
 }
 
@@ -110,4 +117,28 @@ export const loadcomments = async(req,res) => {
     const num = String(Number(index.index)-1)
     const comments = await Comment.find({'index':num});
     return res.json({comments});
+}
+
+
+export const getFix = async(req,res) => {
+    return res.render("fix.html");
+}
+
+export const postFix = async(req,res) => {
+    const {title, contents, id, index} = req.body;
+    var dates = new Date();
+    var year = dates.getFullYear();
+    var month = dates.getMonth();
+    var day = dates.getDate();
+    var date = {"year": year, "month": month, "day": day};
+    try{
+        await Board.findByIdAndUpdate(id,
+           {title, contents, date}
+        );
+    }
+    catch(error){
+        console.log('db 저장과정에서 error 발생')
+    }
+
+    return res.redirect('/contents.html/?index='+index);
 }
