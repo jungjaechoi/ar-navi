@@ -55,8 +55,8 @@ export const getLoadboards = async(req,res) => {
 
 export const postLoadboards = async(req,res) => {
     const {index} = req.body;
-    const num = index.index;
-    const boards = await Board.find({'index':num});
+    const param = await Board.find({});
+    const boards = param[index];
     return res.json({boards});
 }
 
@@ -68,7 +68,7 @@ export const postWrite = async(req,res) => {
     const {title, contents} = req.body;
     var dates = new Date();
     var year = dates.getFullYear();
-    var month = dates.getMonth();
+    var month = dates.getMonth()+1;
     var day = dates.getDate();
     var date = {"year": year, "month": month, "day": day};
     try{
@@ -90,15 +90,15 @@ export const getContents = async(req,res) => {
 }
 
 export const postContents = async(req,res) =>{
-    const {index, comment} = req.body;
+    const {id, comment, index} = req.body;
     var dates = new Date();
     var year = dates.getFullYear();
-    var month = dates.getMonth();
+    var month = dates.getMonth() + 1;
     var day = dates.getDate();
     var date = {"year": year, "month": month, "day": day};
     try{
         await Comment.create({
-            index,
+            id,
             comment,
             date 
         });
@@ -107,13 +107,14 @@ export const postContents = async(req,res) =>{
         console.log('db 저장과정에서 error 발생')
     }
  
-    return res.redirect("/contents.html/?index=" + String(Number(index) + 1));
+    return res.redirect("/contents.html/?index=" + index);
 }
 
 export const loadcomments = async(req,res) => {
     const {index} = req.body;
-    const num = String(Number(index.index)-1)
-    const comments = await Comment.find({'index':num});
+    const param = await Board.find();
+    const id = param[index]._id;
+    const comments = await Comment.find({id:id});
     return res.json({comments});
 }
 
@@ -139,4 +140,25 @@ export const postFix = async(req,res) => {
     }
 
     return res.redirect('/contents.html/?index='+index);
+}
+
+export const deletecomment = async(req,res) =>{
+    const {index_board, index_comment} = req.body;
+    const boards = await Board.find();
+    const board_id = boards[index_board]._id;
+    const comment = await Comment.find({id:board_id});
+    const comment_id = comment[index_comment]._id;
+    Comment.deleteOne({_id: comment_id}, function(err){
+        if (err) return handleError(err);
+    });
+    return res.render('');
+}
+
+export const deleteboard = async(req,res) => {
+    const {index} = req.body;
+    const boards = await Board.find();
+    const board_id = boards[index]._id;
+    await Board.deleteMany({_id:board_id});
+    await Comment.deleteMany({id:board_id});
+    return res.render('');
 }

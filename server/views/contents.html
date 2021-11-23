@@ -100,7 +100,7 @@
         </li>
         <li style="text-align:center;">
           <a style="border: 1px solid; margin-top: 20px; margin-right: 10px;" id="fix-btn" class = "btn btn-default " >수정</a>
-          <a style="border: 1px solid; margin-top: 20px;" class = "btn btn-default ">삭제</a>
+          <a style="border: 1px solid; margin-top: 20px;" class = "btn btn-default " onclick = "delete_board()">삭제</a>
         </li>
     </ul>
     
@@ -112,6 +112,7 @@
               style="width:500px; font-size: 1.4rem; letter-spacing: 1px; padding: 6px;  line-height: 1.5; border: 1px solid;" placeholder="댓글을 입력하세요" required></textarea>
           </li>
           <li>
+            <input type="text" style="display: none;" id="id" name="id">
             <input type="text" style="display: none;" id="index" name="index">
           </li>
           <li style="text-align: center;">
@@ -132,7 +133,6 @@
   </main><!-- End #main -->
 
   <script  type="text/javascript">
-
     function get_query()
     { var url = document.location.href; 
       var qs = url.substring(url.indexOf('?') + 1).split('&'); 
@@ -143,29 +143,45 @@
       return result; 
     }
 
-    var index = get_query();
-    document.getElementById("fix-btn").href = "/fix.html/?index=" + index.index;
+    var param = get_query();
+    var index = param.index;
+    document.getElementById("fix-btn").href = "/fix.html/?index=" + index;
+
+    function delete_board(){
+      $(document).ready(function(){
+          $.ajax({
+            url: "/deleteboard",
+            type: "post",
+            data: {index:index-1},
+            success: function(result){
+              window.location.href = '/board.html';
+            }
+          })
+      })
+    }
 
     $(document).ready(function(){
-      $.ajax({
-        url: "/loadboards",
-        type: "get",
-        datatype: "json",
-        success: function(result){
-          
-          var obj = get_query();
-          $('input[name=title]').attr('value',result.boards[obj.index-1].title);
-          $('input[name=contents]').attr('value',result.boards[obj.index-1].contents); 
-          $('input[name=index]').attr('value',obj.index-1);
-        }
-      })
-    })
+          $.ajax({
+            url: "/loadboards",
+            type: "post",
+            datatype: "json",
+            data: {index:index-1},
+            success: function(result){
+              var obj = get_query();
+              $('input[name=title]').attr('value',result.boards.title);
+              $('input[name=contents]').attr('value',result.boards.contents); 
+              $('input[name=id]').attr('value',result.boards._id);
+              $('input[name=index]').attr('value',index);
+            }
+          })
+      }
+    )
 
     $(document).ready(function(){
     $.ajax({
       url: "/loadcomments",
       type: "post",
-      data: {index: get_query()},
+      data: {index: index-1},
       datatype: "json",
       success: function(result){
         
@@ -174,14 +190,31 @@
           var objRow;
           objRow = document.all("commentsShow").insertRow();
           objDate = document.all("commentsShow").insertRow();
+          objDelete =  document.all("commentsShow").insertRow();
           var objCell = objRow.insertCell();
           var objCell2 = objDate.insertCell();
+          var objCell3 = objDelete.insertCell();
           var frmTag = result.comments[i].comment;
           var frmTag2 = result.comments[i].date.year + '-' + result.comments[i].date.month + '-' + result.comments[i].date.day
+          var frmTag3 = '삭제';
           objCell.innerHTML = frmTag;
           objCell2.innerHTML = frmTag2;
-          objCell.style = "font-size: 1.4em; border-bottom:none; padding-top:15px; padding-bottom: 3px; width:460px;"
-          objCell2.style = "font-size: 1em; color:gray; border-top:none; padding-top:6px; padding-bottom: 3px;"
+          objCell3.innerHTML = frmTag3;
+          objCell.style = "font-size: 1.5em; border-bottom:none; padding-top:15px; padding-bottom: 3px; width:460px;"
+          objCell2.style = "font-size: 1em; color:gray; border:none; padding-top:6px; padding-bottom: 0px;"
+          objCell3.style = "border-top:none; padding-top 0px;"
+          objCell3.onclick = function(element){
+            $(document).ready(function(){
+              $.ajax({
+                url: "/deletecomment",
+                type: "post",
+                data: {index_board: index-1, index_comment: parseInt(element.srcElement.parentNode.rowIndex/3)},
+                success: function(result){
+                   window.location.href = '/contents.html/?index='+index;
+            }
+              })
+            })
+          }
           objRow.style = "word-break: break-all;"
       }
 

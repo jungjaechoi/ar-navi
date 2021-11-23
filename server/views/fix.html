@@ -104,7 +104,7 @@
                 <input type="text" style="display: none;" id="index" name="index">
             </li>
             <li style="text-align: center;">
-                <input type="submit",  value="수정" style="margin-top: 25px; margin-bottom: 50px; font-size: 13px;">
+                <input type="submit",  value="수정" style="margin-top: 25px; margin-bottom: 100px; font-size: 13px;">
             </li>
         </ul>
     </form> 
@@ -123,20 +123,19 @@
         }
 
         var param = get_query();
-        var index = String(Number(param.index) - 1);
-        console.log(index);
+        var index = param.index;
         $(document).ready(function(){
           $.ajax({
             url: "/loadboards",
             type: "post",
             datatype: "json",
-            data: {index: index},
+            data: {index: index-1},
             success: function(result){
               
               var obj = get_query();
-              $('input[name=title]').attr('value',result.boards[obj.index-1].title);
-              $('input[name=contents]').attr('value',result.boards[obj.index-1].contents); 
-              $('input[name=id]').attr('value',result.boards[obj.index-1]._id);
+              $('input[name=title]').attr('value',result.boards.title);
+              $('input[name=contents]').attr('value',result.boards.contents); 
+              $('input[name=id]').attr('value',result.boards._id);
               $('input[name=index]').attr('value',obj.index);
             }
           })
