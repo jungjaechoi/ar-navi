@@ -73,7 +73,7 @@ export const getWrite = async(req,res) => {
 }
 
 export const postWrite = async(req,res) => {
-    const {title, contents} = req.body;
+    const {opinion,cellphone,title, contents} = req.body;
     var dates = new Date();
     var year = dates.getFullYear();
     var month = dates.getMonth()+1;
@@ -81,6 +81,8 @@ export const postWrite = async(req,res) => {
     var date = {"year": year, "month": month, "day": day};
     try{
         await Board.create({
+            opinion,
+            cellphone,
             title,
             contents,
             date
@@ -155,7 +157,7 @@ export const deletecomment = async(req,res) =>{
     const {index_board, index_comment} = req.body;
     const boards = await Board.find();
     const length = Object.keys(boards).length;
-    const board_id = boards[length-1-index]._id;
+    const board_id = boards[length-1-index_board]._id;
     const comment = await Comment.find({id:board_id});
     const comment_id = comment[index_comment]._id;
     Comment.deleteOne({_id: comment_id}, function(err){

@@ -93,8 +93,14 @@
 
   <main id="main">
     <div class="container" >
-      <div style="height: 340px;">
-        <table class="table table-hover" style = " margin-top:100px; margin-bottom:40px;">
+    <select style = "margin-top:100px; width:100px; height: 20px; font-size: 1.1em;"onchange="handleOnChange(this)" >
+        <option value="10">10개씩보기</option>
+        <option value="15">15개씩보기</option>
+        <option value="20">20개씩보기</option>
+      </select>
+      <div id="table" style="height: 340px;">
+      
+        <table class="table table-hover" style = " margin-top:30px; margin-bottom:40px;">
           <thead>
               <tr>
                   <th>번호</th>
@@ -122,6 +128,23 @@
   <script type="text/javascript">
     let pagination = 0;
     let page_board_num = 10;
+
+    function handleOnChange(param){
+      page_board_num = Number(param.value);
+      pagination = 0;
+      if(param.value == '10'){
+        document.getElementById('table').style="height: 340px;"
+      }
+      else if(param.value == '15'){
+        document.getElementById('table').style="height: 550px;"
+      }
+      else if(param.value == '20'){
+        document.getElementById('table').style="height: 700px;"
+      }
+      load_pagination();
+      load_board(0);
+    }
+
      $(document).ready(function(){
       $.ajax({
         url: "/loadpagination",
@@ -493,7 +516,7 @@
         success: function(result){
           
 
-          for(var i = 0; i<page_board_num ; i++){
+          for(var i = 0; i<20; i++){
             document.all("tblShow").deleteRow(-1);
           }
 
