@@ -98,6 +98,7 @@
           <thead>
               <tr>
                   <th>번호</th>
+                  <th>답변여부</th>
                   <th>제목</th>
                   <th>작성자</th>
                   <th>날짜</th>
@@ -133,12 +134,29 @@
           
           var param = JSON.stringify(result);
           var length = Object.keys(result.boards).length;
-          for(var i = 0; i<10 && i<length; i++){
+          for(var i = length-1; i>length-11 && i>-1; i--){
+
           var objRow;
           objRow = document.all("tblShow").insertRow();
 
           var objCell_num = objRow.insertCell();
           objCell_num.innerHTML = i+1;
+       
+          var objCell_answer = objRow.insertCell();
+
+          var comment_exist = new Set(JSON.parse(result.comment_exist));
+          var arr_comment_exist = Array.from(comment_exist);
+
+          for(var j = 0; j<2;j++){
+            if(result.boards[i]._id == arr_comment_exist[j]){
+              objCell_answer.innerHTML = '답변완료';
+              break;
+            }
+            else{
+ 
+            objCell_answer.innerHTML = '답변예정';
+          }
+          }
 
           var objCell_title = objRow.insertCell();
           objCell_title.innerHTML =  result.boards[i].title;
@@ -172,12 +190,27 @@
 
           var param = JSON.stringify(result);
           var length = Object.keys(result.boards).length;
-          for(var i = 10*num; i<10*num+10  && i<length; i++){
+          for(var i = length-1-10*num; i>length-1-10*num-10  && i>-1; i--){
           var objRow;
           objRow = document.all("tblShow").insertRow();
 
           var objCell_num = objRow.insertCell();
           objCell_num.innerHTML = i+1;
+
+          var comment_exist = new Set(JSON.parse(result.comment_exist));
+          var arr_comment_exist = Array.from(comment_exist);
+          
+          var objCell_answer = objRow.insertCell();
+
+          for(var j = 0; j<arr_comment_exist.length;j++){
+            if(result.boards[i]._id == arr_comment_exist[j]){
+              objCell_answer.innerHTML = '답변완료';
+              break;
+            }
+            else{
+            objCell_answer.innerHTML = '답변예정';
+          }
+          }
 
           var objCell_title = objRow.insertCell();
           objCell_title.innerHTML =  result.boards[i].title

@@ -50,13 +50,21 @@ export const board = async(req,res) => {
 
 export const getLoadboards = async(req,res) => {
     const boards = await Board.find({});
-    return res.json({boards});
+    const comments = await Comment.find({});
+    const length = Object.keys(comments).length;
+    var set = new Set();
+    for(var i = 0; i<length ; i++){
+        set.add(comments[i].id);
+    }
+    const comment_exist = JSON.stringify([...set]);
+    return res.json({boards, comment_exist});
 }
 
 export const postLoadboards = async(req,res) => {
     const {index} = req.body;
     const param = await Board.find({});
-    const boards = param[index];
+    const length = Object.keys(param).length;
+    const boards = param[length-1-index];
     return res.json({boards});
 }
 
@@ -113,7 +121,8 @@ export const postContents = async(req,res) =>{
 export const loadcomments = async(req,res) => {
     const {index} = req.body;
     const param = await Board.find();
-    const id = param[index]._id;
+    const length = Object.keys(param).length;
+    const id = param[length-1-index]._id;
     const comments = await Comment.find({id:id});
     return res.json({comments});
 }
@@ -145,7 +154,8 @@ export const postFix = async(req,res) => {
 export const deletecomment = async(req,res) =>{
     const {index_board, index_comment} = req.body;
     const boards = await Board.find();
-    const board_id = boards[index_board]._id;
+    const length = Object.keys(boards).length;
+    const board_id = boards[length-1-index]._id;
     const comment = await Comment.find({id:board_id});
     const comment_id = comment[index_comment]._id;
     Comment.deleteOne({_id: comment_id}, function(err){
@@ -157,7 +167,8 @@ export const deletecomment = async(req,res) =>{
 export const deleteboard = async(req,res) => {
     const {index} = req.body;
     const boards = await Board.find();
-    const board_id = boards[index]._id;
+    const length = Object.keys(boards).length;
+    const board_id = boards[length-1-index]._id;
     await Board.deleteMany({_id:board_id});
     await Comment.deleteMany({id:board_id});
     return res.render('');
