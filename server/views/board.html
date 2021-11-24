@@ -112,15 +112,16 @@
 
       <a style="border: 1px solid; margin-top: 20px;" class = "btn btn-default pull-right" href="write.html" >글쓰기</a>
       <div style="margin-left: 37%; margin-top: 60px; margin-bottom: 60px;">
+        <p class = "page-num" style="margin-left: 17%; font-size: 1.3em;"></p>
           <ul class="pagination" id = "pages">
           </ul>
-          <p class = "page-num" style="margin-left: 18%;"></p>
       </div>  
     </div>
   </main><!-- End #main -->
 
   <script type="text/javascript">
     let pagination = 0;
+    let page_board_num = 10;
      $(document).ready(function(){
       $.ajax({
         url: "/loadpagination",
@@ -128,15 +129,17 @@
         datatype: "json",
         success: function(result){
           
-          let length = Math.ceil(result.length/10);
+          let length = Math.ceil(result.length/page_board_num);
           //처음 기본 로딩
           if(length<6){
             for(let i = 1; i<length+1; i++){
+
               const li = document.createElement("li");
             
               const a = document.createElement("a");
               a.onclick = function(){
                 load_board(i-1);
+                
               }
               const textNode = document.createTextNode(i);
               a.appendChild(textNode);
@@ -189,6 +192,7 @@
 
                 a.onclick = function(){
                   load_board(i-1);
+                  a.style = "background:lightgray;"
                 }                
                 const textNode = document.createTextNode(i);
                 a.appendChild(textNode);
@@ -237,6 +241,7 @@
     // < , <<, > , >> 버튼 눌렀을 때 로딩해주는 함수
     function load_pagination(){
 
+      // 기존 ul의 자식 node 들 지우기
       for(var i = 0; i<9;i++){
         const ul = document.getElementById('pages');
         const items = ul.getElementsByTagName('li');
@@ -250,8 +255,9 @@
         type: "get",
         datatype: "json",
         success: function(result){
-          let length = Math.ceil(result.length/10);
+          let length = Math.ceil(result.length/page_board_num);
           if(length<pagination*5+6){
+                
             // << 버튼 추가
             let li = document.createElement("li");
             let a = document.createElement("a");
@@ -292,6 +298,7 @@
               const a = document.createElement("a");
               a.onclick = function(){
                 load_board(i-1);
+                a.style = "background:lightgray;"
               }
               let textNode = document.createTextNode(i);
               a.appendChild(textNode);
@@ -375,6 +382,7 @@
 
                 a.onclick = function(){
                   load_board(i-1);
+                  a.style = "background:lightgray;"
                 }                
                 const textNode = document.createTextNode(i);
                 a.appendChild(textNode);
@@ -431,9 +439,9 @@
           var param = JSON.stringify(result);
           var length = Object.keys(result.boards).length;
           let p = document.getElementsByClassName("page-num")[0];
-          p.innerText = "1 / " + Math.ceil(length/10) + "페이지";
+          p.innerText = "1 / " + Math.ceil(length/page_board_num) + "페이지";
 
-          for(var i = length-1; i>length-11 && i>-1; i--){
+          for(var i = length-1; i>length-page_board_num-1 && i>-1; i--){
 
           var objRow;
           objRow = document.all("tblShow").insertRow();
@@ -484,17 +492,42 @@
         datatype: "json",
         success: function(result){
           
-          for(var i = 0; i<10 ; i++){
+
+          for(var i = 0; i<page_board_num ; i++){
             document.all("tblShow").deleteRow(-1);
           }
 
           var param = JSON.stringify(result);
           var length = Object.keys(result.boards).length;
 
-          let p = document.getElementsByClassName("page-num")[0];
-          p.innerText = Number(num+1) + " / " + Math.ceil(length/10) + "페이지";
+          var ul = document.getElementById('pages');
+          li = ul.childNodes;
 
-          for(var i = length-1-10*num; i>length-1-10*num-10  && i>-1; i--){
+
+          var page_length = Math.ceil(length/page_board_num);
+
+          if(pagination*5+5>page_length){
+            for(var i =1; i<10 ; i++){
+              li[i].childNodes[0].style = "background:white";
+            }
+            if(num<page_length-(page_length%5)){
+              li[num%5+3+pagination*5-page_length].childNodes[0].style = "background:lightgray";
+            }
+            else{
+              li[num%5+3+(pagination+1)*5-page_length].childNodes[0].style = "background:lightgray";
+            }
+          }
+          else{
+            for(var i =1; i<10 ; i++){
+              li[i].childNodes[0].style = "background:white";
+            }
+            li[num%5+3].childNodes[0].style = "background:lightgray";
+          }
+
+          let p = document.getElementsByClassName("page-num")[0];
+          p.innerText = Number(num+1) + " / " + Math.ceil(length/page_board_num) + "페이지";
+
+          for(var i = length-1-page_board_num*num; i>length-1-page_board_num*num-page_board_num  && i>-1; i--){
           var objRow;
           objRow = document.all("tblShow").insertRow();
 
@@ -526,7 +559,7 @@
           objCell_date.innerHTML = result.boards[i].date.year + '-' + result.boards[i].date.month + '-' + result.boards[i].date.day;
            
           objRow.onclick = function(element){
-            window.location.href = "/contents.html/?index=" + (num*10+element.srcElement.parentNode.rowIndex);
+            window.location.href = "/contents.html/?index=" + (num*page_board_num+element.srcElement.parentNode.rowIndex);
           }
         }
 
