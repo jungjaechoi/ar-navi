@@ -1,7 +1,8 @@
 import express from "express";
 import {home, down, summary, manual, getLogin, postLogin, board, getWrite, 
     postWrite, getLoadboards, postLoadboards,getContents,postContents, 
-    loadcomments, getFix,postFix, deletecomment, deleteboard} from "../controllers/usercontroller.js";
+    loadcomments, getFix,postFix, deletecomment, deleteboard,loadpagination
+} from "../controllers/usercontroller.js";
 
 const rootRouter = express.Router();
 
@@ -19,5 +20,6 @@ rootRouter.post("/loadcomments",loadcomments);
 rootRouter.route("/fix.html").get(getFix).post(postFix);
 rootRouter.post("/deletecomment", deletecomment);
 rootRouter.post("/deleteboard",deleteboard);
+rootRouter.get("/loadpagination",loadpagination);
 
 export default rootRouter;   

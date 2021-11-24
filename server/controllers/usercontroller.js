@@ -173,3 +173,9 @@ export const deleteboard = async(req,res) => {
     await Comment.deleteMany({id:board_id});
     return res.render('');
 }
+
+export const loadpagination = async(req,res) =>{
+    const boards = await Board.find();
+    const length = Object.keys(boards).length;
+    return res.json({length});
+}

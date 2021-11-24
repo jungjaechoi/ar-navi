@@ -111,20 +111,316 @@
         </hr>
 
       <a style="border: 1px solid; margin-top: 20px;" class = "btn btn-default pull-right" href="write.html" >글쓰기</a>
-      <div style="margin-left: 45%; margin-top: 60px; margin-bottom: 60px;">
-          <ul class="pagination">
-              <li><a onclick="first();">1</a></li>
-              <li><a onclick="second();">2</a></li>
-              <li><a onclick="third();">3</a></li>
-              <li><a onclick="fourth();">4</a></li>
-              <li><a onclick="fifth();">5</a></li>
+      <div style="margin-left: 37%; margin-top: 60px; margin-bottom: 60px;">
+          <ul class="pagination" id = "pages">
           </ul>
+          <p class = "page-num" style="margin-left: 18%;"></p>
       </div>  
     </div>
   </main><!-- End #main -->
 
   <script type="text/javascript">
+    let pagination = 0;
+     $(document).ready(function(){
+      $.ajax({
+        url: "/loadpagination",
+        type: "get",
+        datatype: "json",
+        success: function(result){
+          
+          let length = Math.ceil(result.length/10);
+          //처음 기본 로딩
+          if(length<6){
+            for(let i = 1; i<length+1; i++){
+              const li = document.createElement("li");
+            
+              const a = document.createElement("a");
+              a.onclick = function(){
+                load_board(i-1);
+              }
+              const textNode = document.createTextNode(i);
+              a.appendChild(textNode);
 
+              li.appendChild(a);
+
+              document.getElementById('pages').appendChild(li);
+              
+            }
+          }
+          else if (length >5){
+
+                // << 버튼 추가
+                let li = document.createElement("li");
+                let a = document.createElement("a");
+
+                a.onclick = function(){
+                    load_board(0);
+                    if(pagination != 0){
+                      pagination = 0;
+                      load_pagination();
+                      
+                    }
+                }                
+                let textNode = document.createTextNode('<<');
+                a.appendChild(textNode);
+                li.appendChild(a);
+                document.getElementById('pages').appendChild(li);     
+
+                // < 버튼 추가
+                li = document.createElement("li");
+                a = document.createElement("a");
+
+                a.onclick = function(){
+                  if(pagination>0){
+                    pagination -= 1;
+                    load_pagination();
+                    load_board(pagination*5+4);
+                  }
+                }                
+                textNode = document.createTextNode('<');
+                a.appendChild(textNode);
+                li.appendChild(a);
+                document.getElementById('pages').appendChild(li);     
+
+              // 숫자버튼 추가
+             for(let i = pagination*5+1; i<pagination*5+6; i++){
+                let li = document.createElement("li");
+                let a = document.createElement("a");
+
+                a.onclick = function(){
+                  load_board(i-1);
+                }                
+                const textNode = document.createTextNode(i);
+                a.appendChild(textNode);
+                li.appendChild(a);
+                document.getElementById('pages').appendChild(li);                
+              }
+
+                // > 버튼 추가
+                li = document.createElement("li");
+                a = document.createElement("a");
+
+                a.onclick = function(){
+                  if(pagination<Math.ceil(length/5)-1){
+                    pagination += 1;
+                    load_pagination();
+                    load_board(pagination*5);
+                  }
+                }                
+                textNode = document.createTextNode('>');
+                a.appendChild(textNode);
+                li.appendChild(a);
+                document.getElementById('pages').appendChild(li);    
+
+                // >> 버튼 추가
+                li = document.createElement("li");
+                a = document.createElement("a");
+
+                a.onclick = function(){
+                    load_board(length-1);
+                    if( pagination != Math.ceil(length/5-1)){
+                      pagination = Math.ceil(length/5-1);
+                      load_pagination();
+                      
+                    }
+                }                
+                textNode = document.createTextNode('>>');
+                a.appendChild(textNode);
+                li.appendChild(a);
+                document.getElementById('pages').appendChild(li);   
+            }           
+          }
+        })
+      })
+
+
+    // < , <<, > , >> 버튼 눌렀을 때 로딩해주는 함수
+    function load_pagination(){
+
+      for(var i = 0; i<9;i++){
+        const ul = document.getElementById('pages');
+        const items = ul.getElementsByTagName('li');
+        items[0].remove();
+      }
+      
+
+      $(document).ready(function(){
+      $.ajax({
+        url: "/loadpagination",
+        type: "get",
+        datatype: "json",
+        success: function(result){
+          let length = Math.ceil(result.length/10);
+          if(length<pagination*5+6){
+            // << 버튼 추가
+            let li = document.createElement("li");
+            let a = document.createElement("a");
+
+            a.onclick = function(){
+                load_board(0);
+                if(pagination != 0){
+                  pagination = 0;
+                  load_pagination();
+                  
+                }
+            }                
+            let textNode = document.createTextNode('<<');
+            a.appendChild(textNode);
+            li.appendChild(a);
+            document.getElementById('pages').appendChild(li); 
+            
+            // < 버튼 추가
+            li = document.createElement("li");
+            a = document.createElement("a");
+
+            a.onclick = function(){
+              if(pagination>-1){
+                pagination -= 1;
+                load_pagination();
+                load_board(pagination*5+4);
+              }
+            }              
+            textNode = document.createTextNode('<');
+            a.appendChild(textNode);
+            li.appendChild(a);
+            document.getElementById('pages').appendChild(li);
+
+            // 숫자버튼 추가
+            for(let i = length-4; i<length+1; i++){
+              const li = document.createElement("li");
+
+              const a = document.createElement("a");
+              a.onclick = function(){
+                load_board(i-1);
+              }
+              let textNode = document.createTextNode(i);
+              a.appendChild(textNode);
+              li.appendChild(a);
+
+              document.getElementById('pages').appendChild(li);
+              
+            }
+
+            // > 버튼 추가
+            li = document.createElement("li");
+            a = document.createElement("a");
+
+            a.onclick = function(){
+              if(pagination<Math.ceil(length/5)-1){
+                pagination += 1;
+                load_pagination();
+                load_board(pagination*5);
+              }
+            }                
+            textNode = document.createTextNode('>');
+            a.appendChild(textNode);
+            li.appendChild(a);
+            document.getElementById('pages').appendChild(li); 
+
+             // >> 버튼 추가
+            li = document.createElement("li");
+            a = document.createElement("a");
+
+            a.onclick = function(){
+                load_board(length-1);
+                if( pagination != Math.ceil(length/5-1)){
+                  pagination = Math.ceil(length/5-1);
+                  load_pagination();
+                  
+                }               
+            } 
+            textNode = document.createTextNode('>>');
+            a.appendChild(textNode);
+            li.appendChild(a);
+            document.getElementById('pages').appendChild(li);
+          }
+          else if (length >pagination*5){
+                // << 버튼 추가
+                let li = document.createElement("li");
+                let a = document.createElement("a");
+
+                a.onclick = function(){
+                    load_board(0);
+                    if(pagination != 0){
+                      pagination = 0;
+                      load_pagination();
+                      
+                    }
+                }                
+                let textNode = document.createTextNode('<<');
+                a.appendChild(textNode);
+                li.appendChild(a);
+                document.getElementById('pages').appendChild(li); 
+
+                 // < 버튼 추가
+                li = document.createElement("li");
+                a = document.createElement("a");
+
+                a.onclick = function(){
+                  if(pagination>0){
+                    pagination -= 1;
+                    load_pagination();
+                    load_board(pagination*5+4);
+                  }
+                }              
+                textNode = document.createTextNode('<');
+                a.appendChild(textNode);
+                li.appendChild(a);
+                document.getElementById('pages').appendChild(li);     
+
+               // 숫자 버튼 추가
+             for(let i = pagination*5+1; i<pagination*5+6; i++){
+                const li = document.createElement("li");
+                const a = document.createElement("a");
+
+                a.onclick = function(){
+                  load_board(i-1);
+                }                
+                const textNode = document.createTextNode(i);
+                a.appendChild(textNode);
+                li.appendChild(a);
+                document.getElementById('pages').appendChild(li);                
+              }
+
+               // > 버튼 추가
+              li = document.createElement("li");
+              a = document.createElement("a");
+
+              a.onclick = function(){
+                if(pagination<Math.ceil(length/5)-1){
+                  pagination += 1;
+                  load_pagination();
+                  load_board(pagination*5);
+                }
+              }                
+              textNode = document.createTextNode('>');
+              a.appendChild(textNode);
+              li.appendChild(a);
+              document.getElementById('pages').appendChild(li); 
+
+               // >> 버튼 추가
+              li = document.createElement("li");
+              a = document.createElement("a");
+
+              a.onclick = function(){
+                  load_board(length-1)
+                  if( pagination != Math.ceil(length/5-1)){
+                  pagination = Math.ceil(length/5-1);
+                  load_pagination();
+                  ;
+                }
+              }                
+              textNode = document.createTextNode('>>');
+              a.appendChild(textNode);
+              li.appendChild(a);
+              document.getElementById('pages').appendChild(li);
+            }           
+          }
+        })
+      })
+    }
+     
+    //처음 게시판 로딩
     $(document).ready(function(){
       $.ajax({
         url: "/loadboards",
@@ -134,6 +430,9 @@
           
           var param = JSON.stringify(result);
           var length = Object.keys(result.boards).length;
+          let p = document.getElementsByClassName("page-num")[0];
+          p.innerText = "1 / " + Math.ceil(length/10) + "페이지";
+
           for(var i = length-1; i>length-11 && i>-1; i--){
 
           var objRow;
@@ -176,7 +475,8 @@
       })
     })
    
-    function load(num){
+   //paginatino 버튼 누를 때 게시판 로딩
+    function load_board(num){
       $(document).ready(function(){
       $.ajax({
         url: "/loadboards",
@@ -190,6 +490,10 @@
 
           var param = JSON.stringify(result);
           var length = Object.keys(result.boards).length;
+
+          let p = document.getElementsByClassName("page-num")[0];
+          p.innerText = Number(num+1) + " / " + Math.ceil(length/10) + "페이지";
+
           for(var i = length-1-10*num; i>length-1-10*num-10  && i>-1; i--){
           var objRow;
           objRow = document.all("tblShow").insertRow();
@@ -229,22 +533,6 @@
         }
       })
     })
-    }
-
-    function first(){
-      load(0);
-    }
-    function second(){
-      load(1);
-    } 
-    function third(){
-      load(2);
-    }
-    function fourth(){
-      load(3);
-    }
-    function fifth(){
-      load(4);
     }
 
   </script>
