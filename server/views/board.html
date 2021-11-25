@@ -98,9 +98,11 @@
         <option value="10">10개씩보기</option>
         <option value="15">15개씩보기</option>
         <option value="20">20개씩보기</option>
-      </select>
+    </select>
+    <a style="margin-left: 20px;" onclick="onlymine()" id="onlymine">내 글만 보기</a>
+
+
       <div id="table" style="height: 340px;">
-      
         <table class="table table-hover" style = " margin-top:30px; margin-bottom:40px;">
           <thead>
               <tr>
@@ -120,7 +122,7 @@
       <a style="border: 1px solid; margin-top: 20px;" class = "btn btn-default pull-right" onclick="goWrite()" >글쓰기</a>
       <div style="margin-left: 37%; margin-top: 60px; margin-bottom: 60px;">
         <p class = "page-num" style="margin-left: 17%; font-size: 1.3em;"></p>
-          <ul class="pagination" id = "pages">
+          <ul class="pagination"id = "pages">
           </ul>
       </div>  
     </div>
@@ -130,31 +132,61 @@
   
     let pagination = 0;
     let page_board_num = 10;
+    let guaranteed = 0; // -1 이면 토큰 만료, 0이면 로그인 안한상태, 1이면 로그인 됐고 토큰도 맞음
+    let isonlymine = 0;
+    
+    $(document).ready(function(){
+      $.ajax({
+        url: "/verifyToken",
+        type: "post",
+        datatype: "json",
+        data: {token: localStorage.getItem('token')},
+        success: function(result){
+          if(result == 'ok'){
+            guaranteed = 1;
+          }
+          else if(result == 'needLogin'){
+            guaranteed = 0;
+        
+          }
+          else if(result == 'tokenExpired'){
+            guaranteed = -1;
+          }
+        }
+      })
+    })
+
+    function onlymine(){
+      if(isonlymine==0){
+        isonlymine=1;
+        document.getElementById('onlymine').style = "margin-left: 20px; color:purple;"
+        load_board(0);
+        load_pagination();
+      }
+      else{
+        isonlymine=0;
+        document.getElementById('onlymine').style = "margin-left: 20px; color:black;"    
+        load_board(0);  
+        load_pagination(); 
+      }
+
+    }
 
     function goWrite(){
-      $(document).ready(function(){
-          $.ajax({
-            url: "/verifyToken",
-            type: "post",
-            datatype: "json",
-            data: {token: localStorage.getItem('token')},
-            success: function(result){
-              if(result == 'ok'){
-                window.location.href='/write.html';
-              }
-              else if(result == 'needLogin'){
-                alert("로그인이 필요한 서비스입니다")
-                window.location.href='/login.html';
-              }
-              else if(result == 'tokenExpired'){
-                alert("세션이 만료되었습니다. 다시 로그인해주세요")
-                logout();
-                window.location.href='/login.html';
-              }
-            }
-          })
-        })
+      if(guaranteed==1){
+        window.location.href='/write.html';
+      }
+      else if(guaranteed==0){
+        alert("로그인이 필요한 서비스입니다")
+        window.location.href='/login.html';
+      }
+      else if(guaranteed==-1){
+        alert("세션이 만료되었습니다. 다시 로그인해주세요")
+        logout();
+        window.location.href='/login.html';
+      }
     }
+    
 
     function handleOnChange(param){
       page_board_num = Number(param.value);
@@ -182,6 +214,10 @@
           let length = Math.ceil(result.length/page_board_num);
           //처음 기본 로딩
           if(length<6){
+            if(length == 1){document.getElementById('pages').style=`margin-left:${(5-length)*4.9}%;`;}
+            if(length == 2){document.getElementById('pages').style=`margin-left:${(5-length)*5.8}%;`;}
+            if(length == 3){document.getElementById('pages').style=`margin-left:${(5-length)*7.5}%;`;}
+            if(length == 4){document.getElementById('pages').style=`margin-left:${(5-length)*13}%;`;}
             for(let i = 1; i<length+1; i++){
 
               const li = document.createElement("li");
@@ -298,149 +334,89 @@
         items[0].remove();
       }
       
-
-      $(document).ready(function(){
-      $.ajax({
-        url: "/loadpagination",
-        type: "get",
-        datatype: "json",
-        success: function(result){
-          let length = Math.ceil(result.length/page_board_num);
-          if(length<pagination*5+6){
-                
-            // << 버튼 추가
-            let li = document.createElement("li");
-            let a = document.createElement("a");
-
-            a.onclick = function(){
-                load_board(0);
-                if(pagination != 0){
-                  pagination = 0;
-                  load_pagination();
-                  
-                }
-            }                
-            let textNode = document.createTextNode('<<');
-            a.appendChild(textNode);
-            li.appendChild(a);
-            document.getElementById('pages').appendChild(li); 
-            
-            // < 버튼 추가
-            li = document.createElement("li");
-            a = document.createElement("a");
-
-            a.onclick = function(){
-              if(pagination>-1){
-                pagination -= 1;
-                load_pagination();
-                load_board(pagination*5+4);
-              }
-            }              
-            textNode = document.createTextNode('<');
-            a.appendChild(textNode);
-            li.appendChild(a);
-            document.getElementById('pages').appendChild(li);
-
-            // 숫자버튼 추가
-            for(let i = length-4; i<length+1; i++){
-              const li = document.createElement("li");
-
-              const a = document.createElement("a");
-              a.onclick = function(){
-                load_board(i-1);
-                a.style = "background:lightgray;"
-              }
-              let textNode = document.createTextNode(i);
-              a.appendChild(textNode);
-              li.appendChild(a);
-
-              document.getElementById('pages').appendChild(li);
+      if(isonlymine==0){
+          $(document).ready(function(){
+        $.ajax({
+          url: "/loadpagination",
+          type: "get",
+          datatype: "json",
+          success: function(result){
+            let length = Math.ceil(result.length/page_board_num);
+            if(length<5){
               
-            }
-
-            // > 버튼 추가
-            li = document.createElement("li");
-            a = document.createElement("a");
-
-            a.onclick = function(){
-              if(pagination<Math.ceil(length/5)-1){
-                pagination += 1;
-                load_pagination();
-                load_board(pagination*5);
-              }
-            }                
-            textNode = document.createTextNode('>');
-            a.appendChild(textNode);
-            li.appendChild(a);
-            document.getElementById('pages').appendChild(li); 
-
-             // >> 버튼 추가
-            li = document.createElement("li");
-            a = document.createElement("a");
-
-            a.onclick = function(){
-                load_board(length-1);
-                if( pagination != Math.ceil(length/5-1)){
-                  pagination = Math.ceil(length/5-1);
-                  load_pagination();
-                  
-                }               
-            } 
-            textNode = document.createTextNode('>>');
-            a.appendChild(textNode);
-            li.appendChild(a);
-            document.getElementById('pages').appendChild(li);
-          }
-          else if (length >pagination*5){
-                // << 버튼 추가
-                let li = document.createElement("li");
-                let a = document.createElement("a");
-
-                a.onclick = function(){
-                    load_board(0);
-                    if(pagination != 0){
-                      pagination = 0;
-                      load_pagination();
-                      
-                    }
-                }                
-                let textNode = document.createTextNode('<<');
-                a.appendChild(textNode);
-                li.appendChild(a);
-                document.getElementById('pages').appendChild(li); 
-
-                 // < 버튼 추가
-                li = document.createElement("li");
-                a = document.createElement("a");
-
-                a.onclick = function(){
-                  if(pagination>0){
-                    pagination -= 1;
-                    load_pagination();
-                    load_board(pagination*5+4);
-                  }
-                }              
-                textNode = document.createTextNode('<');
-                a.appendChild(textNode);
-                li.appendChild(a);
-                document.getElementById('pages').appendChild(li);     
-
-               // 숫자 버튼 추가
-             for(let i = pagination*5+1; i<pagination*5+6; i++){
+              if(length == 1){document.getElementById('pages').style=`margin-left:${(5-length)*4.9}%;`;}
+              if(length == 2){document.getElementById('pages').style=`margin-left:${(5-length)*5.8}%;`;}
+              if(length == 3){document.getElementById('pages').style=`margin-left:${(5-length)*7.5}%;`;}
+              if(length == 4){document.getElementById('pages').style=`margin-left:${(5-length)*13}%;`;}
+              // 숫자버튼 추가
+              for(let i = 1; i<length+1; i++){
                 const li = document.createElement("li");
-                const a = document.createElement("a");
 
+                const a = document.createElement("a");
                 a.onclick = function(){
                   load_board(i-1);
                   a.style = "background:lightgray;"
-                }                
-                const textNode = document.createTextNode(i);
+                }
+                let textNode = document.createTextNode(i);
                 a.appendChild(textNode);
                 li.appendChild(a);
-                document.getElementById('pages').appendChild(li);                
+
+                document.getElementById('pages').appendChild(li);
+              }
+            }
+            else if(length<pagination*5+6){
+                  
+              // << 버튼 추가
+              let li = document.createElement("li");
+              let a = document.createElement("a");
+
+              a.onclick = function(){
+                  load_board(0);
+                  if(pagination != 0){
+                    pagination = 0;
+                    load_pagination();
+                    
+                  }
+              }                
+              let textNode = document.createTextNode('<<');
+              a.appendChild(textNode);
+              li.appendChild(a);
+              document.getElementById('pages').appendChild(li); 
+              
+              // < 버튼 추가
+              li = document.createElement("li");
+              a = document.createElement("a");
+
+              a.onclick = function(){
+                if(pagination>-1){
+                  pagination -= 1;
+                  load_pagination();
+                  load_board(pagination*5+4);
+                }
+              }              
+              textNode = document.createTextNode('<');
+              a.appendChild(textNode);
+              li.appendChild(a);
+              document.getElementById('pages').appendChild(li);
+
+              // 숫자버튼 추가
+              for(let i = length-4; i<length+1; i++){
+                const li = document.createElement("li");
+
+                const a = document.createElement("a");
+                a.onclick = function(){
+                  load_board(i-1);
+                  a.style = "background:lightgray;"
+                }
+                let textNode = document.createTextNode(i);
+                a.appendChild(textNode);
+                li.appendChild(a);
+
+                document.getElementById('pages').appendChild(li);
+                
               }
 
-               // > 버튼 추가
+              // > 버튼 추가
               li = document.createElement("li");
               a = document.createElement("a");
 
@@ -456,28 +432,315 @@
               li.appendChild(a);
               document.getElementById('pages').appendChild(li); 
 
-               // >> 버튼 추가
+              // >> 버튼 추가
               li = document.createElement("li");
               a = document.createElement("a");
 
               a.onclick = function(){
-                  load_board(length-1)
+                  load_board(length-1);
                   if( pagination != Math.ceil(length/5-1)){
-                  pagination = Math.ceil(length/5-1);
-                  load_pagination();
-                  ;
-                }
-              }                
+                    pagination = Math.ceil(length/5-1);
+                    load_pagination();
+                    
+                  }               
+              } 
               textNode = document.createTextNode('>>');
               a.appendChild(textNode);
               li.appendChild(a);
               document.getElementById('pages').appendChild(li);
-            }           
-          }
+            }
+            else if (length >pagination*5){
+                  // << 버튼 추가
+                  let li = document.createElement("li");
+                  let a = document.createElement("a");
+
+                  a.onclick = function(){
+                      load_board(0);
+                      if(pagination != 0){
+                        pagination = 0;
+                        load_pagination();
+                        
+                      }
+                  }                
+                  let textNode = document.createTextNode('<<');
+                  a.appendChild(textNode);
+                  li.appendChild(a);
+                  document.getElementById('pages').appendChild(li); 
+
+                  // < 버튼 추가
+                  li = document.createElement("li");
+                  a = document.createElement("a");
+
+                  a.onclick = function(){
+                    if(pagination>0){
+                      pagination -= 1;
+                      load_pagination();
+                      load_board(pagination*5+4);
+                    }
+                  }              
+                  textNode = document.createTextNode('<');
+                  a.appendChild(textNode);
+                  li.appendChild(a);
+                  document.getElementById('pages').appendChild(li);     
+
+                // 숫자 버튼 추가
+              for(let i = pagination*5+1; i<pagination*5+6; i++){
+                  const li = document.createElement("li");
+                  const a = document.createElement("a");
+
+                  a.onclick = function(){
+                    load_board(i-1);
+                    a.style = "background:lightgray;"
+                  }                
+                  const textNode = document.createTextNode(i);
+                  a.appendChild(textNode);
+                  li.appendChild(a);
+                  document.getElementById('pages').appendChild(li);                
+                }
+
+                // > 버튼 추가
+                li = document.createElement("li");
+                a = document.createElement("a");
+
+                a.onclick = function(){
+                  if(pagination<Math.ceil(length/5)-1){
+                    pagination += 1;
+                    load_pagination();
+                    load_board(pagination*5);
+                  }
+                }                
+                textNode = document.createTextNode('>');
+                a.appendChild(textNode);
+                li.appendChild(a);
+                document.getElementById('pages').appendChild(li); 
+
+                // >> 버튼 추가
+                li = document.createElement("li");
+                a = document.createElement("a");
+
+                a.onclick = function(){
+                    load_board(length-1)
+                    if( pagination != Math.ceil(length/5-1)){
+                    pagination = Math.ceil(length/5-1);
+                    load_pagination();
+                    ;
+                  }
+                }                
+                textNode = document.createTextNode('>>');
+                a.appendChild(textNode);
+                li.appendChild(a);
+                document.getElementById('pages').appendChild(li);
+              }           
+            }
+          })
         })
-      })
+      }
+      if(isonlymine==1){
+          $(document).ready(function(){
+        $.ajax({
+          url: "/onlyminepagination",
+          type: "post",
+          datatype: "json",
+          data:{email:localStorage.getItem('email')},
+          success: function(result){
+            let length = Math.ceil(result.length/page_board_num);
+            if(length<5){
+              if(length == 1){document.getElementById('pages').style=`margin-left:${(5-length)*4.9}%;`;}
+              if(length == 2){document.getElementById('pages').style=`margin-left:${(5-length)*5.8}%;`;}
+              if(length == 3){document.getElementById('pages').style=`margin-left:${(5-length)*7.5}%;`;}
+              if(length == 4){document.getElementById('pages').style=`margin-left:${(5-length)*13}%;`;}
+              // 숫자버튼 추가
+              for(let i = 1; i<length+1; i++){
+                const li = document.createElement("li");
+
+                const a = document.createElement("a");
+                a.onclick = function(){
+                  load_board(i-1);
+                  a.style = "background:lightgray;"
+                }
+                let textNode = document.createTextNode(i);
+                a.appendChild(textNode);
+                li.appendChild(a);
+
+                document.getElementById('pages').appendChild(li);
+              }
+            }
+            else if(length<pagination*5+6){
+                  
+              // << 버튼 추가
+              let li = document.createElement("li");
+              let a = document.createElement("a");
+
+              a.onclick = function(){
+                  load_board(0);
+                  if(pagination != 0){
+                    pagination = 0;
+                    load_pagination();
+                    
+                  }
+              }                
+              let textNode = document.createTextNode('<<');
+              a.appendChild(textNode);
+              li.appendChild(a);
+              document.getElementById('pages').appendChild(li); 
+              
+              // < 버튼 추가
+              li = document.createElement("li");
+              a = document.createElement("a");
+
+              a.onclick = function(){
+                if(pagination>-1){
+                  pagination -= 1;
+                  load_pagination();
+                  load_board(pagination*5+4);
+                }
+              }              
+              textNode = document.createTextNode('<');
+              a.appendChild(textNode);
+              li.appendChild(a);
+              document.getElementById('pages').appendChild(li);
+
+              // 숫자버튼 추가
+              for(let i = length-4; i<length+1; i++){
+                const li = document.createElement("li");
+
+                const a = document.createElement("a");
+                a.onclick = function(){
+                  load_board(i-1);
+                  a.style = "background:lightgray;"
+                }
+                let textNode = document.createTextNode(i);
+                a.appendChild(textNode);
+                li.appendChild(a);
+
+                document.getElementById('pages').appendChild(li);
+                
+              }
+
+              // > 버튼 추가
+              li = document.createElement("li");
+              a = document.createElement("a");
+
+              a.onclick = function(){
+                if(pagination<Math.ceil(length/5)-1){
+                  pagination += 1;
+                  load_pagination();
+                  load_board(pagination*5);
+                }
+              }                
+              textNode = document.createTextNode('>');
+              a.appendChild(textNode);
+              li.appendChild(a);
+              document.getElementById('pages').appendChild(li); 
+
+              // >> 버튼 추가
+              li = document.createElement("li");
+              a = document.createElement("a");
+
+              a.onclick = function(){
+                  load_board(length-1);
+                  if( pagination != Math.ceil(length/5-1)){
+                    pagination = Math.ceil(length/5-1);
+                    load_pagination();
+                    
+                  }               
+              } 
+              textNode = document.createTextNode('>>');
+              a.appendChild(textNode);
+              li.appendChild(a);
+              document.getElementById('pages').appendChild(li);
+            }
+            else if (length >pagination*5){
+                  // << 버튼 추가
+                  let li = document.createElement("li");
+                  let a = document.createElement("a");
+
+                  a.onclick = function(){
+                      load_board(0);
+                      if(pagination != 0){
+                        pagination = 0;
+                        load_pagination();
+                        
+                      }
+                  }                
+                  let textNode = document.createTextNode('<<');
+                  a.appendChild(textNode);
+                  li.appendChild(a);
+                  document.getElementById('pages').appendChild(li); 
+
+                  // < 버튼 추가
+                  li = document.createElement("li");
+                  a = document.createElement("a");
+
+                  a.onclick = function(){
+                    if(pagination>0){
+                      pagination -= 1;
+                      load_pagination();
+                      load_board(pagination*5+4);
+                    }
+                  }              
+                  textNode = document.createTextNode('<');
+                  a.appendChild(textNode);
+                  li.appendChild(a);
+                  document.getElementById('pages').appendChild(li);     
+
+                // 숫자 버튼 추가
+              for(let i = pagination*5+1; i<pagination*5+6; i++){
+                  const li = document.createElement("li");
+                  const a = document.createElement("a");
+
+                  a.onclick = function(){
+                    load_board(i-1);
+                    a.style = "background:lightgray;"
+                  }                
+                  const textNode = document.createTextNode(i);
+                  a.appendChild(textNode);
+                  li.appendChild(a);
+                  document.getElementById('pages').appendChild(li);                
+                }
+
+                // > 버튼 추가
+                li = document.createElement("li");
+                a = document.createElement("a");
+
+                a.onclick = function(){
+                  if(pagination<Math.ceil(length/5)-1){
+                    pagination += 1;
+                    load_pagination();
+                    load_board(pagination*5);
+                  }
+                }                
+                textNode = document.createTextNode('>');
+                a.appendChild(textNode);
+                li.appendChild(a);
+                document.getElementById('pages').appendChild(li); 
+
+                // >> 버튼 추가
+                li = document.createElement("li");
+                a = document.createElement("a");
+
+                a.onclick = function(){
+                    load_board(length-1)
+                    if( pagination != Math.ceil(length/5-1)){
+                    pagination = Math.ceil(length/5-1);
+                    load_pagination();
+                    ;
+                  }
+                }                
+                textNode = document.createTextNode('>>');
+                a.appendChild(textNode);
+                li.appendChild(a);
+                document.getElementById('pages').appendChild(li);
+              }           
+            }
+          })
+        })
+      }
+      
     }
      
+    let issecret = 0;
+
     //처음 게시판 로딩
     $(document).ready(function(){
       $.ajax({
@@ -504,7 +767,7 @@
           var comment_exist = new Set(JSON.parse(result.comment_exist));
           var arr_comment_exist = Array.from(comment_exist);
 
-          for(var j = 0; j<2;j++){
+          for(var j = 0; j<arr_comment_exist.length;j++){
             if(result.boards[i]._id == arr_comment_exist[j]){
               objCell_answer.innerHTML = '답변완료';
               break;
@@ -515,17 +778,50 @@
           }
           }
 
+          if(result.boards[i].secret=='1' && guaranteed==1 && localStorage.getItem('email')==result.boards[i].email){
+            issecret = 0;
+          }
+          else if(result.boards[i].secret=='1'){
+            issecret = 1;
+          }
+          else{
+            issecret = 0;
+          }
+
           var objCell_title = objRow.insertCell();
-          objCell_title.innerHTML =  result.boards[i].title;
+          if(issecret==1){
+            if(result.boards[i].title.length<6){
+              objCell_title.innerHTML =   '****비밀글****';
+            }
+            else{
+              objCell_title.innerHTML =   '****비밀글****';
+            }
+          }
+          else{
+            if(result.boards[i].title.length<6){
+              objCell_title.innerHTML =  result.boards[i].title ;
+            }
+            else{
+              objCell_title.innerHTML =  result.boards[i].title.substring(0,4) + '...';
+            }
+          }
 
           var objCell_name = objRow.insertCell();
           objCell_name.innerHTML = result.boards[i].name;
 
           var objCell_date = objRow.insertCell();
           objCell_date.innerHTML = result.boards[i].date.year + '-' + result.boards[i].date.month + '-' + result.boards[i].date.day;
-
-          objRow.onclick = function(element){
-            window.location.href = "/contents.html/?index=" + element.srcElement.parentNode.rowIndex;
+          
+          
+          if(issecret==1){
+            objRow.onclick = function(element){
+              alert("비밀글입니다"); 
+            }
+          }
+          else{
+            objRow.onclick = function(element){
+              window.location.href = "/contents.html/?index=" + element.srcElement.parentNode.rowIndex;
+            }
           }
         }
 
@@ -533,89 +829,248 @@
       })
     })
    
-   //paginatino 버튼 누를 때 게시판 로딩
+   //paginatino 버튼 이나 '내글만보기' 누를 때 게시판 로딩
     function load_board(num){
-      $(document).ready(function(){
-      $.ajax({
-        url: "/loadboards",
-        type: "get",
-        datatype: "json",
-        success: function(result){
-          
+      if(isonlymine==0){
+          $(document).ready(function(){
+          $.ajax({
+            url: "/loadboards",
+            type: "get",
+            datatype: "json",
+            success: function(result){
+              
+              for(var i = 0; i<20; i++){
+                document.all("tblShow").deleteRow(-1);
+              }
 
-          for(var i = 0; i<20; i++){
-            document.all("tblShow").deleteRow(-1);
-          }
+              var param = JSON.stringify(result);
+              var length = Object.keys(result.boards).length;
 
-          var param = JSON.stringify(result);
-          var length = Object.keys(result.boards).length;
-
-          var ul = document.getElementById('pages');
-          li = ul.childNodes;
+              var ul = document.getElementById('pages');
+              li = ul.childNodes;
 
 
-          var page_length = Math.ceil(length/page_board_num);
+              var page_length = Math.ceil(length/page_board_num);
 
-          if(pagination*5+5>page_length){
-            for(var i =1; i<10 ; i++){
-              li[i].childNodes[0].style = "background:white";
+              if(page_length<5){
+                for(var i =1; i<page_length+1 ; i++){
+                  li[i].childNodes[0].style = "background:white";
+                }
+                li[num+1].childNodes[0].style = "background:lightgray";
+              }  
+              else if(pagination*5+5>page_length){
+                for(var i =1; i<10 ; i++){
+                  li[i].childNodes[0].style = "background:white";
+                }
+                if(num<page_length-(page_length%5)){
+                  li[num%5+3+pagination*5-page_length].childNodes[0].style = "background:lightgray";
+                }
+                else{
+                  li[num%5+3+(pagination+1)*5-page_length].childNodes[0].style = "background:lightgray";
+                }
+              }
+              else{
+                for(var i =1; i<10 ; i++){
+                  li[i].childNodes[0].style = "background:white";
+                }
+                li[num%5+3].childNodes[0].style = "background:lightgray";
+              }
+
+              let p = document.getElementsByClassName("page-num")[0];
+              p.innerText = Number(num+1) + " / " + Math.ceil(length/page_board_num) + "페이지";
+
+              for(var i = length-1-page_board_num*num; i>length-1-page_board_num*num-page_board_num  && i>-1; i--){
+              var objRow;
+              objRow = document.all("tblShow").insertRow();
+
+              var objCell_num = objRow.insertCell();
+              objCell_num.innerHTML = i+1;
+
+              var comment_exist = new Set(JSON.parse(result.comment_exist));
+              var arr_comment_exist = Array.from(comment_exist);
+              
+              var objCell_answer = objRow.insertCell();
+
+              for(var j = 0; j<arr_comment_exist.length;j++){
+                if(result.boards[i]._id == arr_comment_exist[j]){
+                  objCell_answer.innerHTML = '답변완료';
+                  break;
+                }
+                else{
+                objCell_answer.innerHTML = '답변예정';
+              }
+              }
+              if(result.boards[i].secret=='1' && guaranteed==1 && localStorage.getItem('email')==result.boards[i].email){
+                issecret = 0;
+              }
+              else if(result.boards[i].secret=='1'){
+                issecret = 1;
+              }
+              else{
+                issecret = 0;
+              }
+
+              var objCell_title = objRow.insertCell();
+              if(issecret==1){
+                if(result.boards[i].title.length<6){
+                  objCell_title.innerHTML = '****비밀글****';
+                }
+                else{
+                  objCell_title.innerHTML =  '****비밀글****';
+                }
+              }
+              else{
+                if(result.boards[i].title.length<6){
+                  objCell_title.innerHTML =  result.boards[i].title ;
+                }
+                else{
+                  objCell_title.innerHTML =  result.boards[i].title.substring(0,4) + '...';
+                }
+              }
+
+              var objCell_name = objRow.insertCell();
+              objCell_name.innerHTML = result.boards[i].name;
+
+              var objCell_date = objRow.insertCell();
+              objCell_date.innerHTML = result.boards[i].date.year + '-' + result.boards[i].date.month + '-' + result.boards[i].date.day;
+              
+              
+              if(issecret==1){
+                objRow.onclick = function(element){
+                  alert("비밀글입니다"); 
+                }
+              }
+              else{
+                objRow.onclick = function(element){
+                  window.location.href = "/contents.html/?index=" + (num*page_board_num+element.srcElement.parentNode.rowIndex);
+                }
+              }
             }
-            if(num<page_length-(page_length%5)){
-              li[num%5+3+pagination*5-page_length].childNodes[0].style = "background:lightgray";
+
             }
-            else{
-              li[num%5+3+(pagination+1)*5-page_length].childNodes[0].style = "background:lightgray";
+          })
+        })
+      }
+      else{
+        $(document).ready(function(){
+          $.ajax({
+            url: "/loadmine",
+            type: "post",
+            datatype: "json",
+            data: {email: localStorage.getItem('email')},
+            success: function(result){
+              
+              for(var i = 0; i<20; i++){
+                document.all("tblShow").deleteRow(-1);
+              }
+
+              var param = JSON.stringify(result);
+              var length = Object.keys(result.boards).length;
+
+              var ul = document.getElementById('pages');
+              li = ul.childNodes;
+
+              var page_length = Math.ceil(length/page_board_num);
+
+              if(page_length<5){
+                for(var i =1; i<page_length+1 ; i++){
+                  li[i].childNodes[0].style = "background:white";
+                }
+                li[num+1].childNodes[0].style = "background:lightgray";
+              }
+              else if(pagination*5+5>page_length){
+                for(var i =1; i<10 ; i++){
+                  li[i].childNodes[0].style = "background:white";
+                }
+                if(num<page_length-(page_length%5)){
+                  li[num%5+3+pagination*5-page_length].childNodes[0].style = "background:lightgray";
+                }
+                else{
+                  li[num%5+3+(pagination+1)*5-page_length].childNodes[0].style = "background:lightgray";
+                }
+              }
+              else{
+                for(var i =1; i<10 ; i++){
+                  li[i].childNodes[0].style = "background:white";
+                }
+                li[num%5+3].childNodes[0].style = "background:lightgray";
+              }
+
+              let p = document.getElementsByClassName("page-num")[0];
+              p.innerText = Number(num+1) + " / " + Math.ceil(length/page_board_num) + "페이지";
+
+              for(var i = length-1-page_board_num*num; i>length-1-page_board_num*num-page_board_num  && i>-1; i--){
+              var objRow;
+              objRow = document.all("tblShow").insertRow();
+
+              var objCell_num = objRow.insertCell();
+              objCell_num.innerHTML = i+1;
+
+              var comment_exist = new Set(JSON.parse(result.comment_exist));
+              var arr_comment_exist = Array.from(comment_exist);
+              
+              var objCell_answer = objRow.insertCell();
+
+              for(var j = 0; j<arr_comment_exist.length;j++){
+                if(result.boards[i]._id == arr_comment_exist[j]){
+                  objCell_answer.innerHTML = '답변완료';
+                  break;
+                }
+                else{
+                objCell_answer.innerHTML = '답변예정';
+              }
+              }
+              if(result.boards[i].secret=='1' && guaranteed==1 && localStorage.getItem('email')==result.boards[i].email){
+                issecret = 0;
+              }
+              else if(result.boards[i].secret=='1'){
+                issecret = 1;
+              }
+              else{
+                issecret = 0;
+              }
+
+              var objCell_title = objRow.insertCell();
+              if(issecret==1){
+                if(result.boards[i].title.length<6){
+                  objCell_title.innerHTML = '****비밀글****';
+                }
+                else{
+                  objCell_title.innerHTML =  '****비밀글****';
+                }
+              }
+              else{
+                if(result.boards[i].title.length<6){
+                  objCell_title.innerHTML =  result.boards[i].title ;
+                }
+                else{
+                  objCell_title.innerHTML =  result.boards[i].title.substring(0,4) + '...';
+                }
+              }
+
+              var objCell_name = objRow.insertCell();
+              objCell_name.innerHTML = result.boards[i].name;
+
+              var objCell_date = objRow.insertCell();
+              objCell_date.innerHTML = result.boards[i].date.year + '-' + result.boards[i].date.month + '-' + result.boards[i].date.day;
+              
+              
+              if(issecret==1){
+                objRow.onclick = function(element){
+                  alert("비밀글입니다"); 
+                }
+              }
+              else{
+                objRow.onclick = function(element){
+                  window.location.href = "/contents.html/?index=" + (num*page_board_num+element.srcElement.parentNode.rowIndex);
+                }
+              }
             }
-          }
-          else{
-            for(var i =1; i<10 ; i++){
-              li[i].childNodes[0].style = "background:white";
+
             }
-            li[num%5+3].childNodes[0].style = "background:lightgray";
-          }
-
-          let p = document.getElementsByClassName("page-num")[0];
-          p.innerText = Number(num+1) + " / " + Math.ceil(length/page_board_num) + "페이지";
-
-          for(var i = length-1-page_board_num*num; i>length-1-page_board_num*num-page_board_num  && i>-1; i--){
-          var objRow;
-          objRow = document.all("tblShow").insertRow();
-
-          var objCell_num = objRow.insertCell();
-          objCell_num.innerHTML = i+1;
-
-          var comment_exist = new Set(JSON.parse(result.comment_exist));
-          var arr_comment_exist = Array.from(comment_exist);
-          
-          var objCell_answer = objRow.insertCell();
-
-          for(var j = 0; j<arr_comment_exist.length;j++){
-            if(result.boards[i]._id == arr_comment_exist[j]){
-              objCell_answer.innerHTML = '답변완료';
-              break;
-            }
-            else{
-            objCell_answer.innerHTML = '답변예정';
-          }
-          }
-
-          var objCell_title = objRow.insertCell();
-          objCell_title.innerHTML =  result.boards[i].title
-
-          var objCell_name = objRow.insertCell();
-          objCell_name.innerHTML = 'ddd';
-
-          var objCell_date = objRow.insertCell();
-          objCell_date.innerHTML = result.boards[i].date.year + '-' + result.boards[i].date.month + '-' + result.boards[i].date.day;
-           
-          objRow.onclick = function(element){
-            window.location.href = "/contents.html/?index=" + (num*page_board_num+element.srcElement.parentNode.rowIndex);
-          }
-        }
-
-        }
-      })
-    })
+          })
+        })
+      }
     }
 
   </script>

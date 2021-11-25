@@ -136,7 +136,11 @@ export const getWrite = async(req,res) => {
 }
 
 export const postWrite = async(req,res) => {
-    const {opinion,cellphone,title, contents, email, name} = req.body;
+    const {opinion,cellphone,title, contents, email, name, issecret} = req.body;
+    let secret = 1;
+    if(issecret==null){
+        secret = 0;
+    }
     var dates = new Date();
     var year = dates.getFullYear();
     var month = dates.getMonth()+1;
@@ -150,7 +154,8 @@ export const postWrite = async(req,res) => {
             contents,
             date,
             email,
-            name
+            name,
+            secret
         });
     }
     catch(error){
@@ -264,4 +269,24 @@ export const verifyToken = async(req,res) => {
     } catch(err){
         return res.send('tokenExpired');
     }
+}
+
+export const loadmine = async(req,res) => {
+    const {email} = req.body;
+    const boards = await Board.find({email:email});
+    const comments = await Comment.find({});
+    const length = Object.keys(comments).length;
+    var set = new Set();
+    for(var i = 0; i<length ; i++){
+        set.add(comments[i].id);
+    }
+    const comment_exist = JSON.stringify([...set]);
+    return res.json({boards, comment_exist});
+}
+
+export const onlyminepagination = async(req,res) =>{
+    const {email} = req.body;
+    const boards = await Board.find({email:email});
+    const length = Object.keys(boards).length;
+    return res.json({length});
 }

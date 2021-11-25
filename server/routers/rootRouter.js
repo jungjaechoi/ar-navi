@@ -1,7 +1,8 @@
 import express from "express";
 import {home, down, summary, manual, getLogin, postLogin, easyLogin, board, getWrite, 
     postWrite, getLoadboards, postLoadboards,getContents,postContents, verifyToken,
-    loadcomments, getFix,postFix, deletecomment, deleteboard,loadpagination,getJoin, postJoin
+    loadcomments, getFix,postFix, deletecomment, deleteboard,loadpagination,getJoin, postJoin,
+    loadmine,onlyminepagination
 } from "../controllers/usercontroller.js";
 
 const rootRouter = express.Router();
@@ -24,5 +25,7 @@ rootRouter.post("/deletecomment", deletecomment);
 rootRouter.post("/deleteboard",deleteboard);
 rootRouter.get("/loadpagination",loadpagination);
 rootRouter.post("/verifyToken", verifyToken);
+rootRouter.post("/loadmine",loadmine);
+rootRouter.post("/onlyminepagination", onlyminepagination)
 
 export default rootRouter;   

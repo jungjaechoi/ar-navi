@@ -7,7 +7,8 @@ const boardSchema = new mongoose.Schema({
     contents: {type: String, required: true},
     date: {type: JSON, required: true},
     email:{type: String, required: true},
-    name: {type: String, required: true}
+    name: {type: String, required: true},
+    secret: {type: String, required: true}
 })
 
 const Board = mongoose.model('Board', boardSchema);

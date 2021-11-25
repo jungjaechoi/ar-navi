@@ -101,7 +101,7 @@
         </li>
         <li style="text-align:center;">
           <a style="border: 1px solid; margin-top: 20px; margin-right: 10px;" id="fix-btn" class = "btn btn-default " >수정</a>
-          <a style="border: 1px solid; margin-top: 20px;" class = "btn btn-default " onclick = "delete_board()">삭제</a>
+          <a style="border: 1px solid; margin-top: 20px;" id="delete-btn" class = "btn btn-default " onclick = "delete_board()">삭제</a>
         </li>
     </ul>
     
@@ -134,6 +134,34 @@
   </main><!-- End #main -->
 
   <script  type="text/javascript">
+
+  let btnshow = 0;
+
+  function btnResult(){
+    if(btnshow == 0){
+      document.getElementById('fix-btn').style = "display:none;"
+      document.getElementById('delete-btn').style = "display:none;"
+    }
+  }
+
+  $(document).ready(function(){
+    $.ajax({
+      url: "/verifyToken",
+      type: "post",
+      datatype: "json",
+      data: {token: localStorage.getItem('token')},
+      success: function(result){
+          if(result == 'ok'){
+            btnshow = 1;
+          }
+          else {
+            btnshow = 0;
+          }
+        }
+      })
+    })
+    
+
     function get_query()
     { var url = document.location.href; 
       var qs = url.substring(url.indexOf('?') + 1).split('&'); 
@@ -173,6 +201,10 @@
               $('input[name=contents]').attr('value',result.boards.contents); 
               $('input[name=id]').attr('value',result.boards._id);
               $('input[name=index]').attr('value',index);
+              if(result.boards.email!=localStorage.getItem('email')){
+                btnshow = 0;
+                btnResult();
+              }
             }
           })
       }
