@@ -94,7 +94,7 @@
 
   <main id="main">
     <div class="container" >
-    <select style = "margin-top:100px; width:100px; height: 20px; font-size: 1.1em;"onchange="handleOnChange(this)" >
+    <select style = "margin-top:100px; width:100px; height: 20px; font-size: 1.1em; "onchange="handleOnChange(this)" id = "howmany">
         <option value="10">10개씩보기</option>
         <option value="15">15개씩보기</option>
         <option value="20">20개씩보기</option>
@@ -159,15 +159,15 @@
     function onlymine(){
       if(isonlymine==0){
         isonlymine=1;
-        document.getElementById('onlymine').style = "margin-left: 20px; color:purple;"
+        document.getElementById('onlymine').style = " margin-left: 20px; color:purple;";
+        document.getElementById('howmany').style = "margin-top:100px; width:100px; height: 20px; font-size: 1.1em; visibility:hidden;";
+        
         load_board(0);
         load_pagination();
       }
       else{
         isonlymine=0;
-        document.getElementById('onlymine').style = "margin-left: 20px; color:black;"    
-        load_board(0);  
-        load_pagination(); 
+        window.location.href = '/board.html';
       }
 
     }
