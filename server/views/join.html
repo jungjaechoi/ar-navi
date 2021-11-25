@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8"> 
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>AR 실내내비게이션서비스</title>
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+  <!-- Favicons -->
+  <link href="/assets/img/favicon.png" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <!-- Main CSS File -->
+  <link rel="stylesheet" type="text/css" href="/assets/js/css/styles.css">..
+
+  <!-- Kakao Login -->
+  <script src = "https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+
+  <!-- Google Login -->
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <meta name ="google-signin-client_id" content="46237981396-80g7m49b12mt0ef3cdlu7h0upireelj7.apps.googleusercontent.com">
+ 
+  <!-- Facebook Login -->
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ko_KR/sdk.js#xfbml=1&version=v10.0&appId=796273041128746" nonce="SiOBIhLG"></script>
+
+  <!-- Naver Login -->
+  <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js" charset="utf-8"></script>
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top">
+    <div class="container d-flex align-items-center">
+
+      <!--<h1 class="logo mr-auto"><a href="index.html">AR </a></h1>-->
+       <a href="index.html" class="logo mr-auto"><img src="/assets/img/ar_logo.png" alt="" class="img-fluid"></a>
+
+      <nav class="nav-menu d-none d-lg-block">
+        <ul>
+          <li class="active"><a href="index.html">홈</a></li>
+          <li><a href="down.html">다운로드</a></li>
+          <li><a href="summary.html">서비스개요</a></li>
+          <li><a href="manual.html">매뉴얼</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header><!-- End Header -->
+
+  <main id="main">
+  <h2 style="margin-left:48.5%; margin-top: 130px;">회원가입</h2>
+    <form method="post" style="margin-top:50px;margin-bottom:20px; ">
+      <ul style="list-style-type:none; ">
+        <li style="text-align: center; margin-bottom: 10px;">
+          <input name="name" type = "text" style = "width:300px; height:40px; font-size: 1.2em; " placeholder="이름" required>
+        </li>
+        <li style="text-align: center; margin-bottom: 10px;">
+          <input name="email" type = "text" style = "width:300px; height:40px; font-size: 1.2em; " placeholder="이메일" required>
+        </li>
+        <li style="text-align: center; margin-bottom: 10px;">  
+          <input name="password1" type = "text" style = "width:300px; height:40px; font-size: 1.2em; " placeholder="비밀번호" required>
+        </li>
+        <li style="text-align: center; margin-bottom: 10px;">  
+          <input name="password2" type = "text" style = "width:300px; height:40px; font-size: 1.2em;" placeholder="비밀번호 재확인" required>
+        </li>
+        <li style="text-align: center; margin-bottom: 10px;"> 
+          <input type = "submit" value="회원가입하기"   style=" font-size: 13px; width:300px; height:40px; font-size: 1.2em; margin-bottom:50px;">
+        </li>
+      </ul>
+    </form>
+    <ul style="list-style-type:none;margin-bottom:50px; ">
+    </ul>
+
+
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" >
+
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+
+          <div class="col-lg-4 col-md-6 footer-contact">
+            <h3><a href="index.html" class="logo mr-auto"><img src="/assets/img/foot_logo.png" alt="" class="img-fluid"></a></h3>
+            <p>
+              서울특별시 성북구 안암로 145 고려대학교 산학관<br><br>
+              <strong>Phone:</strong> 02 3291 2200<br>
+              <strong>Fax:</strong> 070 4275 5321<br>
+              <strong>Email:</strong> info@kounosoft.com<br>
+            </p>
+          </div>
+
+          <div class="col-lg-6 col-md-6 footer-links">
+            <!--<h4>Useful Links</h4>-->
+            <ul>
+              <li><i class="bx bx-chevron-right"></i> <a href="index.html">홈</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="down.html">다운로드</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="summary.html">서비스 개요</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="manual.html">매뉴얼</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="board.html">게시판</a></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+   
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top"><i class="bx bx-up-arrow-alt"></i></a>
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="/assets/js/jqeury_bundle.js"></script>
+  <script src="/assets/js/bootstrap_bundle.js"></script>
+  <script src="/assets/js/counterup_bundle.js"></script>
+  <script src="/assets/js/carousel_bundle.js"></script>
+  <script src="/assets/js/aos_bundle.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="/assets/js/main_bundle.js"></script>
+
+</body>
+
+</html>

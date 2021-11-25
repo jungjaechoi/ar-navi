@@ -69,6 +69,7 @@
         window.location.href = 'http://localhost:4000/'
         localStorage.removeItem('name');
         localStorage.removeItem('email');
+        localStorage.removeItem('token');
         $('#result').empty();
         name = "";
         $('#logout-btn').style.display = "";
@@ -116,7 +117,7 @@
       </div>
         </hr>
 
-      <a style="border: 1px solid; margin-top: 20px;" class = "btn btn-default pull-right" href="write.html" >글쓰기</a>
+      <a style="border: 1px solid; margin-top: 20px;" class = "btn btn-default pull-right" onclick="goWrite()" >글쓰기</a>
       <div style="margin-left: 37%; margin-top: 60px; margin-bottom: 60px;">
         <p class = "page-num" style="margin-left: 17%; font-size: 1.3em;"></p>
           <ul class="pagination" id = "pages">
@@ -126,8 +127,34 @@
   </main><!-- End #main -->
 
   <script type="text/javascript">
+  
     let pagination = 0;
     let page_board_num = 10;
+
+    function goWrite(){
+      $(document).ready(function(){
+          $.ajax({
+            url: "/verifyToken",
+            type: "post",
+            datatype: "json",
+            data: {token: localStorage.getItem('token')},
+            success: function(result){
+              if(result == 'ok'){
+                window.location.href='/write.html';
+              }
+              else if(result == 'needLogin'){
+                alert("로그인이 필요한 서비스입니다")
+                window.location.href='/login.html';
+              }
+              else if(result == 'tokenExpired'){
+                alert("세션이 만료되었습니다. 다시 로그인해주세요")
+                logout();
+                window.location.href='/login.html';
+              }
+            }
+          })
+        })
+    }
 
     function handleOnChange(param){
       page_board_num = Number(param.value);
@@ -492,7 +519,7 @@
           objCell_title.innerHTML =  result.boards[i].title;
 
           var objCell_name = objRow.insertCell();
-          objCell_name.innerHTML = 'ddd';
+          objCell_name.innerHTML = result.boards[i].name;
 
           var objCell_date = objRow.insertCell();
           objCell_date.innerHTML = result.boards[i].date.year + '-' + result.boards[i].date.month + '-' + result.boards[i].date.day;
@@ -617,6 +644,7 @@
               <li><i class="bx bx-chevron-right"></i> <a href="down.html">다운로드</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="summary.html">서비스 개요</a></li>
               <li><i class="bx bx-chevron-right"></i> <a href="manual.html">매뉴얼</a></li>
+              <li><i class="bx bx-chevron-right"></i> <a href="board.html">게시판</a></li>
             </ul>
           </div>
 
