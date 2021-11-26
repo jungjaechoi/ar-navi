@@ -127,10 +127,14 @@
                 
                 localStorage.setItem("prevent_login", 1);
                 $.ajax({
-                  url:"/login.html",
+                  url:"/easylogin",
                   type: "post",
                   data: {name: name, email: email},
-                  success: function(){
+                  datatype: 'json',
+                  success: function(result){
+                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('name', result.name);
+                    localStorage.setItem('email', result.email);
                     window.location.href = "index.html";
                   }
                 })

@@ -74,13 +74,11 @@ export const postLogin = async(req,res) => {
             return res.json({token, name, email});
         }
         else{
-            res.write("<script>alert(\"Wrong Password\")</script>");
-            res.write("<script>window.location='/login.html'</script>");
+            return res.json({token:'wrongpassword'});
         }
     }
     else{
-        res.write("<script>alert(\"Not Exist Email\")</script>");
-        res.write("<script>window.location='/login.html'</script>");
+        return res.json({token:'wrongemail'});
     }
 }
 
@@ -89,21 +87,35 @@ export const easyLogin = async(req,res) => {
     const useremailExists = await User.exists({email});
     if(useremailExists){
         console.log("이미 가입된 회원입니다.");
+        const token1 = jwt.sign({
+            email: email
+        }, secretKey,{
+            expiresIn: option.expiresIn
+        });
+        const token = String(token1);
+        return res.json({token, name, email});
     }
     else{
         try{
             console.log('db에 회원정보가 저장되었습니다');
+            const token1 = jwt.sign({
+                email: email
+            }, secretKey,{
+                expiresIn: option.expiresIn
+            });
+            const token = String(token1);
+            console.log(token1);
+            res.json({token, name, email});
             await User.create({
                 name,
-                email
+                email,
+                password : '1'
             });
         }
         catch(error){
             console.log("db 저장과정에서 error 발생")
         }
     }
-    res.write(`localStorage.setItem('name',${name});`);
-    res.write("<script>window.location=\"/index.html\"</script>");
 }
 
 export const board = async(req,res) => {

@@ -134,7 +134,7 @@
     let page_board_num = 10;
     let guaranteed = 0; // -1 이면 토큰 만료, 0이면 로그인 안한상태, 1이면 로그인 됐고 토큰도 맞음
     let isonlymine = 0;
-    
+
     $(document).ready(function(){
       $.ajax({
         url: "/verifyToken",
@@ -147,14 +147,17 @@
           }
           else if(result == 'needLogin'){
             guaranteed = 0;
+            document.getElementById('onlymine').style = "display: none;"
         
           }
           else if(result == 'tokenExpired'){
             guaranteed = -1;
+            document.getElementById('onlymine').style = "display: none;"
           }
         }
       })
     })
+
 
     function onlymine(){
       if(isonlymine==0){

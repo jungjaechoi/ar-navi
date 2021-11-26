@@ -62,7 +62,7 @@
           <input name="email" id="email" type = "text" style = "width:300px; height:40px; font-size: 1.2em; " placeholder="이메일">
         </li>
         <li style="text-align: center; margin-bottom: 10px;">  
-          <input name="password" id="password" type = "text" style = "width:300px; height:40px; font-size: 1.2em;" placeholder="비밀번호">
+          <input name="password" id="password" type = "password" style = "width:300px; height:40px; font-size: 1.2em;" placeholder="비밀번호">
         </li>
         <li style="text-align: center; margin-bottom: 10px;">  
           <input type="button",  value="로그인" onclick="forLocalStorage()" style=" font-size: 13px; width:300px; height:40px; font-size: 1.2em;">
@@ -76,6 +76,7 @@
       </li>
     </ul>
     <hr>
+   
     <div style = " margin-left: 35%; margin-top: 30px; margin-bottom: 100px; width: 500px; height: 300px">
         <li style ="list-style:none;"> <a id="kakao-login-btn" style = "display: none;"></a></li>
         <a href="#" style = "margin-left: 80px; margin-top:15px;" id = "kakaoLogin" class = "btn sns-kakao"><img src= "/assets/img/btn/kakao.png"></a>
@@ -88,14 +89,7 @@
     </div>
   </main><!-- End #main -->
 
-   <!-- 구글 로그인 -->
-
-   <script type = "text/javascript">
-    $(document).on("click", "#googleLogin",function(){
-      var btnGoogleLogin = document.getElementById("google-login-btn").firstChild;
-      btnGoogleLogin.click();
-    });  
-  </script>
+   <!-- 자체 로그인 -->
 
   <script type="text/javascript">
 
@@ -120,57 +114,41 @@
                      },
               datatype: "json",
               success: function(result){
-                localStorage.setItem('token', result.token);
-                localStorage.setItem('name', result.name);
-                localStorage.setItem('email', result.email);
-                window.location.href = '/index.html';
+                if(result.token=='wrongpassword'){
+                  alert("비밀번호가 틀렸습니다")
+                  window.location.href = '/login.html';
+                }
+                else if (result.token=="wrongemail"){
+                  alert("가입되지 않은 email입니다")
+                  window.location.href = '/login.html';
+                }
+                else{
+                  localStorage.setItem('token', result.token);
+                  localStorage.setItem('name', result.name);
+                  localStorage.setItem('email', result.email);
+                  window.location.href = '/index.html';
+                }
+
               }
             })
         })       
       }
     }
 
-    function prohibit_prevent() {
-      localStorage.setItem("prevent_login", 0);
-    }
   </script>
 
-  <script type="text/javascript">
-    function onSignIn(googleUser) {
-      if(localStorage.getItem("prevent_login")!=null)
-      {
-        if(localStorage.getItem("prevent_login")!='1'){
-          var profile = googleUser.getBasicProfile();
-          $('#result').empty();
-          $('#result').append(profile);
-         
-          $('#kakaoLogin').hide();
-          $('#googleLogin').hide();
-          $('#facebookLogin').hide();
-          $('#naverLogin').hide();
-          $('#result').append(profile);
-          
-          name = profile.getName();
-          email = profile.getEmail();
-            
-          resultdiv = name+'<h4> 님 안녕하세요.'  
-        
-          localStorage.setItem('name', name);
-          localStorage.setItem('email', email);
-          
-          localStorage.setItem("prevent_login", 1);
-          $.ajax({
-              url:"/easylogin",
-              type: "post",
-              data: {name: name, email: email},
-              success: function(){
-                window.location.href = "index.html";
-              }
-            })
-        }
-      }
+<!-- 구글 로그인 -->
+<script type = "text/javascript">
+    $(document).on("click", "#googleLogin",function(){
+      var btnGoogleLogin = document.getElementById("google-login-btn").firstChild;
+      btnGoogleLogin.click();
+    });  
+
+    function prohibit_prevent() {
+      localStorage.setItem("prevent_login", 0);
+      window.location.href = "index.html";
     }
-  </script>
+  </script>  
 
 <!-- 카카오 api 연결 해제 -->
 <!-- 
@@ -234,7 +212,11 @@
               url:"/easylogin",
               type: "post",
               data: {name: name, email: email},
-              success: function(){
+              datatype: 'json',
+              success: function(result){
+                localStorage.setItem('token', result.token);
+                localStorage.setItem('name', result.name);
+                localStorage.setItem('email', result.email);
                 window.location.href = "index.html";
               }
             })
@@ -346,13 +328,17 @@
                 
                 localStorage.setItem("prevent_login", 1);
                 $.ajax({
-                url:"/easylogin",
-                type: "post",
-                data: {name: name, email: email},
-                success: function(){
-                  window.location.href = "index.html";
-                }
-              })
+                  url:"/easylogin",
+                  type: "post",
+                  data: {name: name, email: email},
+                  datatype: 'json',
+                  success: function(result){
+                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('name', result.name);
+                    localStorage.setItem('email', result.email);
+                    window.location.href = "index.html";
+                  }
+                })
 
                 console.log(naverLogin.user); 
                   

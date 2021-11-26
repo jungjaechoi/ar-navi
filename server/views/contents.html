@@ -94,6 +94,12 @@
     <h2 style="margin-top: 115px; margin-bottom: 20px; text-align: center;">게시글</h2> 
     <ul style="list-style-type:none; ">
         <li style="text-align: center; margin-bottom: 10px;">
+            <input name="opinion" id = "opinion" type="text" style="width:500px; font-size: 1.4rem; padding: 6px;" value="" readonly/>
+        </li>
+        <li style="text-align: center; margin-bottom: 10px;">
+            <input name="cellphone" id = "cellphone" type="text" style="width:500px; font-size: 1.4rem; padding: 6px;" value="" readonly/>
+        </li>
+        <li style="text-align: center; margin-bottom: 10px;">
             <input name="title" id = "title" type="text" style="width:500px; font-size: 1.4rem; padding: 6px;" value="" readonly/>
         </li>
         <li style="text-align: center;">
@@ -197,6 +203,32 @@
             data: {index:index-1},
             success: function(result){
               var obj = get_query();
+              if(result.boards.opinion=="app"){$('input[name=opinion]').attr('value','문의사항: 앱이 안깔려요');}
+              else if(result.boards.opinion=="cant-start"){$('input[name=opinion]').attr('value','문의사항: 앱이 실행이 안되요');}
+              else if(result.boards.opinion=="slow"){$('input[name=opinion]').attr('value','문의사항: 앱이 느려요');}
+              else if(result.boards.opinion=="badmap"){$('input[name=opinion]').attr('value','문의사항: 지도가 부정확해요');}
+              else if(result.boards.opinion=="howtouse"){$('input[name=opinion]').attr('value','문의사항: 어떻게 쓰는건지 모르겠어요');}
+              else if(result.boards.opinion=="etc"){$('input[name=opinion]').attr('value','문의사항: 기타');}
+
+              if(result.boards.cellphone=="1"){$('input[name=cellphone]').attr('value','스마트폰 기종: Z플립3');}
+              else if(result.boards.cellphone=="2"){$('input[name=cellphone]').attr('value','스마트폰 기종: 갤럭시 노트 10');}
+              else if(result.boards.cellphone=="3"){$('input[name=cellphone]').attr('value','스마트폰 기종: 갤럭시 노트 20');}
+              else if(result.boards.cellphone=="4"){$('input[name=cellphone]').attr('value','스마트폰 기종: 갤럭시 노트 8');}
+              else if(result.boards.cellphone=="5"){$('input[name=cellphone]').attr('value','스마트폰 기종: 갤럭시 노트 9');}
+              else if(result.boards.cellphone=="6"){$('input[name=cellphone]').attr('value','스마트폰 기종: 갤럭시 S 10');}
+              else if(result.boards.cellphone=="7"){$('input[name=cellphone]').attr('value','스마트폰 기종: 갤럭시 S 20');}
+              else if(result.boards.cellphone=="8"){$('input[name=cellphone]').attr('value','스마트폰 기종: 갤럭시 S 21');}
+              else if(result.boards.cellphone=="9"){$('input[name=cellphone]').attr('value','스마트폰 기종: 갤럭시 S 8');}
+              else if(result.boards.cellphone=="10"){$('input[name=cellphone]').attr('value','스마트폰 기종: 갤럭시 S 9');}
+              else if(result.boards.cellphone=="11"){$('input[name=cellphone]').attr('value','스마트폰 기종: 아이폰 11');}
+              else if(result.boards.cellphone=="12"){$('input[name=cellphone]').attr('value','스마트폰 기종: 아이폰 12');}
+              else if(result.boards.cellphone=="13"){$('input[name=cellphone]').attr('value','스마트폰 기종: 아이폰 13');}
+              else if(result.boards.cellphone=="14"){$('input[name=cellphone]').attr('value','스마트폰 기종: 아이폰 6');}
+              else if(result.boards.cellphone=="15"){$('input[name=cellphone]').attr('value','스마트폰 기종: 아이폰 7');}
+              else if(result.boards.cellphone=="16"){$('input[name=cellphone]').attr('value','스마트폰 기종: 아이폰 8');}
+              else if(result.boards.cellphone=="17"){$('input[name=cellphone]').attr('value','스마트폰 기종: 아이폰 SE2');}
+              else if(result.boards.cellphone=="18"){$('input[name=cellphone]').attr('value','스마트폰 기종: 아이폰 X');}
+           
               $('input[name=title]').attr('value',result.boards.title);
               $('input[name=contents]').attr('value',result.boards.contents); 
               $('input[name=id]').attr('value',result.boards._id);
