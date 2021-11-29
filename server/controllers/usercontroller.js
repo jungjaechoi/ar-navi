@@ -29,7 +29,7 @@ export const getJoin = async(req,res) => {
 }
 
 export const postJoin = async(req,res) => {
-    const {name, email, password1, password2} = req.body;
+    const {name, email, password1, password2, phonenumber} = req.body;
     if(password1 != password2){
         return res.status(409).send({error: 'database failure'});
     }
@@ -44,13 +44,14 @@ export const postJoin = async(req,res) => {
                 await User.create({
                     name,
                     email,
-                    password: password1
+                    password: password1,
+                    phonenumber
                 });
             }
             catch(error){
                 console.log("db 저장과정에서 error 발생")
             }
-            res.write("<script>alert(\"Login Again\")</script>");
+            res.write("<script>alert(\"Accepted. Please Login Again.\")</script>");
             res.write("<script>window.location='/login.html'</script>");
         }
         
@@ -299,6 +300,8 @@ export const loadmine = async(req,res) => {
 export const onlyminepagination = async(req,res) =>{
     const {email} = req.body;
     const boards = await Board.find({email:email});
+    const all_boards = await Board.find({});
     const length = Object.keys(boards).length;
-    return res.json({length});
+    const all_length = Object.keys(all_boards).length;
+    return res.json({length, all_length});
 }

@@ -221,6 +221,7 @@
             if(length == 2){document.getElementById('pages').style=`margin-left:${(5-length)*5.8}%;`;}
             if(length == 3){document.getElementById('pages').style=`margin-left:${(5-length)*7.5}%;`;}
             if(length == 4){document.getElementById('pages').style=`margin-left:${(5-length)*13}%;`;}
+
             for(let i = 1; i<length+1; i++){
 
               const li = document.createElement("li");
@@ -329,13 +330,6 @@
 
     // < , <<, > , >> 버튼 눌렀을 때 로딩해주는 함수
     function load_pagination(){
-
-      // 기존 ul의 자식 node 들 지우기
-      for(var i = 0; i<9;i++){
-        const ul = document.getElementById('pages');
-        const items = ul.getElementsByTagName('li');
-        items[0].remove();
-      }
       
       if(isonlymine==0){
           $(document).ready(function(){
@@ -345,6 +339,23 @@
           datatype: "json",
           success: function(result){
             let length = Math.ceil(result.length/page_board_num);
+
+            // 기존 ul의 자식 node 들 지우기
+            if(length < 5){
+              for(var i = 0; i<length;i++){
+                const ul = document.getElementById('pages');
+                const items = ul.getElementsByTagName('li');
+                items[0].remove();
+              }
+            }
+            else{
+              for(var i = 0; i<9;i++){
+                const ul = document.getElementById('pages');
+                const items = ul.getElementsByTagName('li');
+                items[0].remove();
+              }
+            }
+            
             if(length<5){
               
               if(length == 1){document.getElementById('pages').style=`margin-left:${(5-length)*4.9}%;`;}
@@ -547,11 +558,29 @@
           data:{email:localStorage.getItem('email')},
           success: function(result){
             let length = Math.ceil(result.length/page_board_num);
+            let all_length = Math.ceil(result.all_length/page_board_num);
+            // 기존 ul의 자식 node 들 지우기
+            if(all_length < 5){
+              for(var i = 0; i<all_length; i++){
+                const ul = document.getElementById('pages');
+                const items = ul.getElementsByTagName('li');
+                items[0].remove();
+              }
+            }
+            else{
+              for(var i = 0; i<9;i++){
+                const ul = document.getElementById('pages');
+                const items = ul.getElementsByTagName('li');
+                items[0].remove();
+              }
+            }
+
             if(length<5){
               if(length == 1){document.getElementById('pages').style=`margin-left:${(5-length)*4.9}%;`;}
               if(length == 2){document.getElementById('pages').style=`margin-left:${(5-length)*5.8}%;`;}
               if(length == 3){document.getElementById('pages').style=`margin-left:${(5-length)*7.5}%;`;}
               if(length == 4){document.getElementById('pages').style=`margin-left:${(5-length)*13}%;`;}
+
               // 숫자버튼 추가
               for(let i = 1; i<length+1; i++){
                 const li = document.createElement("li");
